@@ -30,11 +30,7 @@ public class HuffmaneTree {
         cars.put(car,newLeaf);
         Node newNode = new Node(); // le noeud qui va contenir à gauche le "# " et à droite le nouveau car
 
-        //Comparaison d'adresses!
-        // La condition est vérif quand l'arbre est vide, On peut se passer de la condition Si
-        // Si on se permet que l'arbre vide soit : 0
-        //                                       /
-        //                                      #
+        //Comparaison d'adresses!, la comapraison est vrai dans le cas de l'arbre vide: #
         if(this.carSpecial == this.root){
             newNode.code = "";
             this.root = newNode;
@@ -46,6 +42,8 @@ public class HuffmaneTree {
         // et donc il pourra déterminer à son tour le code de ses enfants
         newNode.setLeft(this.carSpecial);
         newNode.setRight(newLeaf);
+
+        newNode.majOcc();
 
         // Ajout dans la liste Trié qui représente le parcours GDBH
         gdbh.add(newNode);
@@ -68,8 +66,8 @@ public class HuffmaneTree {
 
     /**
      * Invariants:
-     * - La somme des occurences de left et right est égale à celle de this
-     * - Par construction, Tout noeud interne possède forcément exactement 2 (fils),
+     * -1 La somme des occurences de left et right est égale à celle de this
+     * -2 Par construction, Tout noeud interne possède forcément exactement 2 (fils),
      * c'est à dire on peut pas avoir this avec avec left ou right qui est null
      */
     public class Node implements Comparable<Node> {
@@ -103,14 +101,13 @@ public class HuffmaneTree {
             return this.code.compareTo(o.code);
         }
 
+        /**
+         * Attention! ne met pas à jour les occurence.
+         * Utilisez majOcc() après
+         * @param right
+         */
         public void setRight(Node right) {
             right.parent = this;
-            // Traitement occurrence
-            if (this.right != null){
-                this.occurence = this.occurence - this.right.occurence + right.occurence;
-            }else{
-                this.occurence += right.occurence;
-            }
             this.right = right;
             // Traitement code de huffmane
             // !!!! O(n)
@@ -119,14 +116,13 @@ public class HuffmaneTree {
             this.right.profondeur = this.profondeur+1;
         }
 
+        /**
+         * Attention! ne met pas à jour les occurence.
+         * Utilisez majOcc() après
+         * @param left
+         */
         public void setLeft(Node left) {
             left.parent = this;
-            // Traitement occurrence
-            if (this.left != null){
-                this.occurence = this.occurence - this.left.occurence + left.occurence;
-            }else{
-                this.occurence += left.occurence;
-            }
             this.left = left;
             // Traitement code de huffmane
             // !!!! O(n)
@@ -134,6 +130,18 @@ public class HuffmaneTree {
             // Profondeur
             this.left.profondeur = this.profondeur+1;
 
+        }
+
+        /**
+         * Met à jours les occurence à partir de this à la racine
+         * On profite de l'invariant 2 qui nous permet de ne pas tester si left ou roght sont null
+         */
+        public void majOcc(){
+            Node curr = this;
+            while (curr != null){
+                curr.occurence = curr.left.occurence + curr.right.occurence;
+                curr = curr.parent;
+            }
         }
 
         /**
