@@ -60,14 +60,22 @@ public class HuffmaneTree {
      * Complexité du tailset à analyser
      * @param n
      */
-    public void GDBH(Node n){
+    public void GDBHfrom(Node n){
         for(Node n2 : this.gdbh.tailSet(n)){
             System.out.println(n2);
         }
     }
 
+    public void GDBH(){
+        for(Node n : this.gdbh){
+            System.out.println(n);
+        }
+    }
+
     /**
      * @pre n1 et n2 existent dans l'arbre
+     * !!! modofie les éléments de Set l'ABR devient incoherent
+     * ! Peut etre utilier les seter right et left c'est mieux
      * @param n1
      * @param n2
      */
@@ -91,13 +99,57 @@ public class HuffmaneTree {
         n1.parent = n2Parent;
         n2.parent = n1Parent;
 
+
+
         // Il n'ya pas de redondances dans les maj parceque n1Parent et n2Parent ne sont ancetres l'un de l'autre
+        // Maj des l'arbre
         n1Parent.majOcc();
         n2Parent.majOcc();
+
+        // Avant de modifier les noeuds (sur nos criteres de comparaison) on les enleves pour les réinserer à la bonne place
+        // dans l'arbre de TreeSet
+        // RQ: la prof et code de n1Parent et n2Parent ne sont pas modifié
+        this.removeFromGDBH(n1);
+        this.removeFromGDBH(n2);
+
         n1Parent.majProfondeur();
         n2Parent.majProfondeur();
         n1Parent.majCode();
         n2Parent.majCode();
+
+        //
+        this.addToGDBH(n1);
+        this.addToGDBH(n2);
+
+    }
+
+
+    /**
+     * Recursive!
+     * * @pre Node (pas Leaf )possede left et right
+     * @param n
+     */
+    public void removeFromGDBH(Node n){
+        this.gdbh.remove(n);
+        // On se permet cette condition grace à l'invariant 2 de Node
+        if(n.left != null && n.right != null){
+            this.removeFromGDBH(n.left);
+            this.removeFromGDBH(n.right);
+        }
+    }
+
+    /**
+     * Recursive!
+     * * @pre Node (pas Leaf )possede left et right
+     * @param n
+     */
+    public void addToGDBH(Node n){
+        this.gdbh.add(n);
+        // On se permet cette condition grace à l'invariant 2 de Node
+        if(n.left != null && n.right != null){
+            this.addToGDBH(n.left);
+            this.addToGDBH(n.right);
+        }
     }
 
     /**
