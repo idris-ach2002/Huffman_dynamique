@@ -32,28 +32,95 @@ public class HuffmaneTree {
 
         //Comparaison d'adresses!, la comapraison est vrai dans le cas de l'arbre vide: #
         if(this.carSpecial == this.root){
-            newNode.code = "";
+            newNode.setLeft(this.carSpecial);
+            newNode.setRight(newLeaf);
             this.root = newNode;
+            newNode.majOcc();
+            newNode.majProfondeur();
+            newNode.majCode();
         }else{
             Node parentSpecial = this.carSpecial.getParent();
-            parentSpecial.setLeft(newNode);
-        }
-        // Important de laisser le set après le if comme ça le newNode.code est initialisé
-        // et donc il pourra déterminer à son tour le code de ses enfants
-        newNode.setLeft(this.carSpecial);
-        newNode.setRight(newLeaf);
+            newNode.setLeft(this.carSpecial);
+            newNode.setRight(newLeaf);
+            newNode.majOcc(); // Important !! comprend comment
 
-        newNode.majOcc();
+            parentSpecial.setLeft(newNode);
+            parentSpecial.majCode();
+            parentSpecial.majOcc();
+            parentSpecial.majProfondeur();
+
+        }
 
         // Ajout dans la liste Trié qui représente le parcours GDBH
         gdbh.add(newNode);
         gdbh.add(newLeaf);
     }
 
-    public void GDBH(){
-        for (Node n: this.gdbh){
-            System.out.println(n);
+    /**
+     * Complexité du tailset à analyser
+     * @param n
+     */
+    public void GDBH(Node n){
+        for(Node n2 : this.gdbh.tailSet(n)){
+            System.out.println(n2);
         }
+    }
+
+    /**
+     * @pre n1 et n2 existent dans l'arbre
+     * @param n1
+     * @param n2
+     */
+    public void permute(Node n1, Node n2){
+        Node tmp = n2;
+        Node n2Parent = n2.parent;
+        Node n1Parent = n1.parent;
+        // si le dernier bit du code est 1 alors le noeud et le fils droit de son parent sinon c'est le gauche
+        if(n2.code.charAt(n2.code.length()-1) == '1'){
+            n2Parent.right = n1;
+        }else{
+            n2Parent.left = n1;
+        }
+
+        if(n1.code.charAt(n1.code.length()-1) == '1'){
+            n1Parent.right = tmp;
+        }else{
+            n1Parent.left = tmp;
+        }
+
+        n1.parent = n2Parent;
+        n2.parent = n1Parent;
+
+        // Il n'ya pas de redondances dans les maj parceque n1Parent et n2Parent ne sont ancetres l'un de l'autre
+        n1Parent.majOcc();
+        n2Parent.majOcc();
+        n1Parent.majProfondeur();
+        n2Parent.majProfondeur();
+        n1Parent.majCode();
+        n2Parent.majCode();
+    }
+
+    /**
+     * Renvoi le noeud corresepend au chemin tracin par le mot binaire c
+     * @pre c est correct
+     * @param code
+     * @return
+     */
+    public Node getNodebyCode(String code){
+        int len = code.length();
+        Node res = this.root;
+
+        for (int i =0; i<len; i++){
+            if(code.charAt(i) == '0'){
+                res = res.left;
+            }else{
+                // égale 1 forcément (@pre)
+                res = res.right;
+            }
+        }
+
+        return res;
+
     }
 
     public TreeMap<String, Leaf> getCars() {
@@ -62,6 +129,10 @@ public class HuffmaneTree {
 
     public Leaf getCarSpecial() {
         return carSpecial;
+    }
+
+    public Node getRoot() {
+        return root;
     }
 
     /**
@@ -80,6 +151,7 @@ public class HuffmaneTree {
 
 		public Node() {
             occurence = 0;
+            this.code = "";
             left = right = parent = null;
         }
 
@@ -102,8 +174,9 @@ public class HuffmaneTree {
         }
 
         /**
-         * Attention! ne met pas à jour les occurence.
-         * Utilisez majOcc() après
+         * Attention! ne met pas à jour les occurence, profondeur et codes.
+         * Utilisez mej...() après
+         * parceque l'invariant 2 n'est pas forcément préserver après cette apelle
          * @param right
          */
         public void setRight(Node right) {
@@ -111,25 +184,19 @@ public class HuffmaneTree {
             this.right = right;
             // Traitement code de huffmane
             // !!!! O(n)
-            this.right.code = this.code.concat("1");
-            // Profondeur
-            this.right.profondeur = this.profondeur+1;
+//            this.right.code = this.code.concat("1");
+//            // Profondeur
+//            this.right.profondeur = this.profondeur+1;
         }
 
         /**
-         * Attention! ne met pas à jour les occurence.
-         * Utilisez majOcc() après
+         * Attention! ne met pas à jour les occurence, profondeur et codes.
+         * Utilisez mej...() après
          * @param left
          */
         public void setLeft(Node left) {
             left.parent = this;
             this.left = left;
-            // Traitement code de huffmane
-            // !!!! O(n)
-            this.left.code = this.code.concat("0");
-            // Profondeur
-            this.left.profondeur = this.profondeur+1;
-
         }
 
         /**
@@ -141,6 +208,34 @@ public class HuffmaneTree {
             while (curr != null){
                 curr.occurence = curr.left.occurence + curr.right.occurence;
                 curr = curr.parent;
+            }
+        }
+
+        /**
+         * Récursive! à changer en itérative par la suite pour éviter le stackOverflow
+         * met à jour la profondeur de chaque sous noeud en fonction de celle de this
+         */
+        public void majProfondeur(){
+            if (!(this instanceof Leaf)){
+                this.left.profondeur = this.profondeur + 1;
+                this.right.profondeur = this.profondeur + 1;
+                this.left.majProfondeur();
+                this.right.majProfondeur();
+            }
+
+        }
+        /**
+         * Récursive! à changer en itérative par la suite pour éviter le stackOverflow
+         * met à jour le code de chaque sous noeud en fonction de celle de this
+         */
+        public void majCode(){
+            if (!(this instanceof Leaf)){
+                // !!!! O(n)
+                this.left.code = this.code.concat("0");
+                // !!!! O(n)
+                this.right.code = this.code.concat("1");
+                this.left.majCode();
+                this.right.majCode();
             }
         }
 
