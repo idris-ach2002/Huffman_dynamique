@@ -2,15 +2,16 @@ package ABR;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NavigableSet;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
-public class HuffmaneTree {
+public class HuffmanTreeOptimized {
     private Node root;
     private final Leaf carSpecial = new Leaf(); // C'est le '#'
     
@@ -23,13 +24,13 @@ public class HuffmaneTree {
     private final TreeSet<Node> gdbh = new TreeSet<>();
     
     /**
-     * contient tous les cars qui sont dans l'arbre (recherche en log) 
+     * contient tous les cars qui sont dans l'arbre (recherche en O(1) Table de Hash)
      * Le plus intéressant on a une référence à la feuille de chaque caractère
      * */
     
-    private final TreeMap<String, Leaf> cars = new TreeMap<>();
+    private final HashMap<String, Leaf> cars = new HashMap<>();
 
-    public HuffmaneTree() {
+    public HuffmanTreeOptimized() {
         this.root = this.carSpecial;
         this.root.code = "";
         this.root.profondeur = 0;
@@ -182,7 +183,9 @@ public class HuffmaneTree {
     	
     	Node m = estIncrementable(chemin, gdbh_q);
     	if(m == null) {
-    		chemin.stream().forEach(n -> n.setOccurence(n.getOccurence() + 1));
+    		for(Node noeud : chemin) {
+    			noeud.setOccurence(noeud.getOccurence() + 1);
+    		}
     	} else { // le chemin n'est pas incémentable
     		Node b = finBloc(m, gdbh_q);
     		
@@ -206,16 +209,14 @@ public class HuffmaneTree {
     public void incrementerChemin(Node Q, Node m, List<Node> path) {
     	if(Q == m) { m.setOccurence(m.getOccurence() + 1); }
     	else {
-    		List<Node> chemin = new ArrayList<>();
     		for(Node n : path) {
     			if(n != m) 
-    				chemin.add(n);
+    				n.setOccurence(n.getOccurence() + 1);
     			else {
-    				chemin.add(m); break;
+    				m.setOccurence(m.getOccurence() + 1); break;
     			}
     				
     		}
-    		chemin.stream().forEach(n -> n.setOccurence(n.getOccurence() + 1));
     	}
     }
     
@@ -249,48 +250,39 @@ public class HuffmaneTree {
     */
     public List<Node> directPath(Node Q) {
         List<Node> gamma = new ArrayList<>();
-        //Set<Node> visited = new HashSet<>(); // ← anti-cycle
 
         if (Q == null) return gamma;
 
         gamma.add(Q);
-        //visited.add(Q);
 
         Node cur = Q.getParent();
         while (cur != null) {
-            /*if (visited.contains(cur)) {
-                System.err.println("Cycle détecté dans l'arbre ! => " + cur);
-                System.out.println(visited);
-                break;
-            }*/
             gamma.add(cur);
-            //visited.add(cur);
             cur = cur.getParent();
         }
 
         return gamma;
     }
 
-    /**
+    /** Avant O(m)
+     * Maintenant => Complexité O(log(m)) avec m taille de gdbh_q (notre liste de noeuds de parcours)
      * Cette Méthode renseigne le suivant d'un noeud Q dans le parcours Gdbh si Q = X1 
      * alors son successeur sera X2
+     * 
+     * On utilise NavigableSet<E> qui est une interface introduite dans Java 6 
+     * qui étend SortedSet<E> et fournit des méthodes supplémentaires pour 
+     * naviguer dans un ensemble trié (set ordonné).
      * */
     public Node successeurNoeudGDBH(Node Q, SortedSet<Node> gdbh_q) {
-    	if(Q == null) return Q;
-    	
-    	if (Q == root) return root;
-    	
-    	Iterator<Node> it = gdbh_q.iterator();
-    	
-    	boolean found = false;
-    	while (it.hasNext()) {
-    	    Node current = it.next();
-    	    if (found) return current;
-    	    if (current == Q) found = true;
-    	}
-    	return Q;
+        if (Q == null || Q == root) return Q;
 
+        return ((NavigableSet<Node>) gdbh_q) 
+                .tailSet(Q, false) // false => exclure Q lui-même
+                .stream()
+                .findFirst()
+                .orElse(Q);
     }
+
     
 
     /**
@@ -565,7 +557,7 @@ et fin bloc de 6 c'est 7 avec le code 1
 
     }
 
-    public TreeMap<String, Leaf> getCars() {
+    public HashMap<String, Leaf> getCars() {
         return cars;
     }
 
@@ -762,7 +754,7 @@ et fin bloc de 6 c'est 7 avec le code 1
     
     public static void main(String[] args) {
        HuffmaneTree AHA = new HuffmaneTree();
-       String chaine = "idrisachabouaminaidirmalika";
+       String chaine = "carambarbcm";
        
        for(int i = 0; i < chaine.length(); i++) {
     	   AHA.modification(chaine.charAt(i) + "");
