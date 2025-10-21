@@ -1,13 +1,15 @@
 package ABR;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NavigableSet;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -350,18 +352,13 @@ public class HuffmanTreeOptimized {
      * @param n
      */
     public void removeFromGDBH(Node n){
-        removeFromGDBH(n, new HashSet<>());
+        if (n != null) {
+	        gdbh.remove(n);
+	        removeFromGDBH(n.getLeft());
+	        removeFromGDBH(n.getRight());
+        }    
     }
 
-    private void removeFromGDBH(Node n, Set<Node> visited){
-        if (n == null || visited.contains(n)) return;
-
-        visited.add(n);
-        gdbh.remove(n);
-
-        removeFromGDBH(n.getLeft(), visited);
-        removeFromGDBH(n.getRight(), visited);
-    }
 
 
     /**
@@ -369,19 +366,29 @@ public class HuffmanTreeOptimized {
      * @param n
      */
     public void addToGDBH(Node n){
-    	addToGDBH(n, new HashSet<>());
+	   	 if (n != null) {
+	         gdbh.add(n);
+	         addToGDBH(n.getLeft());
+	         addToGDBH(n.getRight());
+		 }
+    }
+   
+    
+    
+    private int hauteurAHA(Node r) {
+    	if(r == null || (r.getLeft() == null && r.getRight() == null)) {
+    		return 0;
+    	}else {
+    		return 1 + Math.max(
+	    				hauteurAHA(r.getLeft()),
+	    				hauteurAHA(r.getRight())
+    				);
+    	}
     }
     
-    public void addToGDBH(Node n, Set<Node> visited) {
-    	 if (n == null || visited.contains(n)) return;
-
-         visited.add(n);
-         gdbh.add(n);
-
-         addToGDBH(n.getLeft(), visited);
-         addToGDBH(n.getRight(), visited);
+    public int hauteurAHA() {
+    	return hauteurAHA(root);
     }
-    
     
     
    /**
@@ -641,15 +648,11 @@ et fin bloc de 6 c'est 7 avec le code 1
          */
         public void majProfondeur() {
             Deque<Node> stack = new ArrayDeque<>();
-            Set<Node> visited = new HashSet<>();
 
             stack.push(this); // Démarrage depuis le nœud courant (racine)
 
             while (!stack.isEmpty()) {
                 Node current = stack.pop();
-                if (visited.contains(current)) continue; // Évite les cycles ou doublons
-                visited.add(current);
-
                 if (!(current instanceof Leaf)) {
                     if (current.getLeft() != null) {
                         current.left.profondeur = current.profondeur + 1;
@@ -678,15 +681,11 @@ et fin bloc de 6 c'est 7 avec le code 1
          */
         public void majCode() {
             Deque<Node> stack = new ArrayDeque<>();
-            Set<Node> visited = new HashSet<>();
 
             stack.push(this); // Démarrage depuis le nœud courant (racine)
 
             while (!stack.isEmpty()) {
                 Node current = stack.pop();
-                if (visited.contains(current)) continue;
-                visited.add(current);
-
                 if (!(current instanceof Leaf)) {
                     if (current.getLeft() != null) {
                         current.left.code = current.code + "0";
@@ -749,18 +748,28 @@ et fin bloc de 6 c'est 7 avec le code 1
     
 
 
-    
+    public static void construireAHA(String file) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            HuffmanTreeOptimized AHA = new HuffmanTreeOptimized();
+            String line;
+            while ((line = br.readLine()) != null) {
+                for(int i = 0; i < line.length(); i++) {
+             	   AHA.modification(line.charAt(i) + "");
+                }             
+            }
+            
+     	   AHA.afficherArbre();
+    	   System.out.println("Hauteur => " + AHA.hauteurAHA());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+    }
 
     
     public static void main(String[] args) {
-       HuffmaneTree AHA = new HuffmaneTree();
-       String chaine = "carambarbcm";
-       
-       for(int i = 0; i < chaine.length(); i++) {
-    	   AHA.modification(chaine.charAt(i) + "");
-       } 
-       
-	   AHA.afficherArbre();
+    	construireAHA(Paths.get("src/resources/livre.txt").toAbsolutePath().toString());
+    	System.out.println("Path du Fichier => "+ Paths.get("src/resources/livre.txt").toAbsolutePath().toString());
     }
 
 
