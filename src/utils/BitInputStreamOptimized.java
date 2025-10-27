@@ -47,5 +47,3 @@ public class BitInputStreamOptimized implements AutoCloseable {
         in.close();
     }
 }
-
-//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
