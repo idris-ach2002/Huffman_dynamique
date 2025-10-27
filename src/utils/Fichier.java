@@ -33,34 +33,48 @@ public class Fichier {
      * @param src Fichier textuelle représentant une chaine de 0 et de 1
      * @param dst Fichier binaire représentant la quite binaire du fichier src
      */
-    public static void ecriture (String src, String dst){
-        try (BufferedReader br = new BufferedReader(new FileReader(src));
-             FileOutputStream output = new FileOutputStream(dst)) {
+    public static void ecriture(String src, String dst) {
+        try (
+            // Lecture optimisée : lecture UTF-8 par blocs (8K)
+            BufferedReader br = new BufferedReader(new FileReader(src), 8192);
+
+            // Écriture optimisée : sortie bufferisée (8K)
+            BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(dst), 8192)
+        ) {
 
             int codeChar;
-            int cpt = 0; // compte le nombre de char lu
-            String octetString = "";
+            int cpt = 0; // compte le nombre de bits lus
+            StringBuilder octetString = new StringBuilder(8); // plus efficace que concat()
             while ((codeChar = br.read()) != -1) {
                 char c = (char) codeChar;
                 cpt++;
-                octetString = octetString.concat("" + c);
+                octetString.append(c); // même logique que concat()
 
-                if (cpt == 8){
+                if (cpt == 8) {
                     cpt = 0;
-                    // retourne la valeur que représnete la chaine de bit
-                    int octet = Integer.parseInt(octetString, 2); // 2 == base
+                    int octet = Integer.parseInt(octetString.toString(), 2); // conversion base 2 -> décimal
                     output.write(octet);
-                    octetString = "";
+                    octetString.setLength(0); // vide le StringBuilder
                 }
             }
-            // pas multiple de 8
-            if (cpt != 0){
-                for (int i=0; i<8-cpt; i++){
-                    octetString = octetString.concat("0");
+
+            int padding = 0;
+
+            // Gestion du bourrage (même logique)
+            if (cpt != 0) {
+                padding = 8 - cpt;
+                for (int i = 0; i < padding; i++) {
+                    octetString.append("0");
                 }
-                int octet = Integer.parseInt(octetString, 2); // 2 == base
+                int octet = Integer.parseInt(octetString.toString(), 2);
                 output.write(octet);
             }
+
+            // Écrire le padding à la fin (identique à ta version)
+            output.write(padding);
+
+            // Flush du buffer avant fermeture
+            output.flush();
 
         } catch (IOException e) {
             System.out.println("Error handling file. " + e.getMessage());
