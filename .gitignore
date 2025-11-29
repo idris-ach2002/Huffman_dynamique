@@ -4,8 +4,8 @@
 ### Ressouces Volumineuses du projet
 src/resources/*.txt
 src/resources/*.bin
-src/resources/*.huff
-
+resources/*.txt
+resources/*.bin
 
 
 ### IntelliJ IDEA ###
