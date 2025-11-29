@@ -1,6 +1,12 @@
 *.iml
 
 
+### Ressouces Volumineuses du projet
+src/resources/*.txt
+src/resources/*.bin
+src/resources/*.huff
+
+
 
 ### IntelliJ IDEA ###
 out/
