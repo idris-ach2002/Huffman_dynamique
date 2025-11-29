@@ -1,0 +1,1 @@
+Le fichier car.txt contient le résultat de la compression du text 'car'

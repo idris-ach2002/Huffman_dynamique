@@ -3,29 +3,13 @@ package compression;
 public class Main {
 
     public static void main(String[] args) {
-        HuffmaneTree ht = new HuffmaneTree();
+        //Compression comp = new Compression("src/resources/Blaise_Pascal.txt", "src/resources/Blaise_Pascal.huff");
+        //Compression comp = new Compression("src/resources/Carambar.txt", "src/resources/CarambarCompresse.bin");
+        long deb = System.currentTimeMillis();
+        Compression.compresser("src/resources/1.txt", "src/resources/1.huff");
+        long fin = System.currentTimeMillis();
 
-        ht.add("a");
-        ht.add("a");
-        ht.add("a");
-        ht.add("a");
-
-        ht.add("b");
-        ht.add("b");
-        ht.add("c");
-        ht.add("d");
-        System.out.println("Liste des caracteres présents: \n");
-        System.out.println(ht.getCars());
-
-        System.out.println("GDBH: \n");
-        ht.GDBH();
-        ht.permute(ht.getRoot().getLeft().getLeft(), ht.getRoot().getRight() );
-        // Après le permute le a doit etre à gauche noeud qui contient b. La profondeur de l'arbre devient 3
-        System.out.println("GDBH: \n");
-        ht.GDBH();
-
-
-
+        System.out.println("Compression à pris => " + ((double)(fin - deb) / 1000.0) + "S");
 
     }
 

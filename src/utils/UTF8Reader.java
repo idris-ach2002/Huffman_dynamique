@@ -64,7 +64,7 @@ public class UTF8Reader {
         }
         return sb.toString();
     }
-    
+
     /**
      * Version optimisée : retourne directement les bits du codePoint UTF-8
      * sous forme d'entiers (0/1), sans créer de chaîne binaire.
@@ -85,7 +85,7 @@ public class UTF8Reader {
         return bits;
     }
 
-    
+
     /**
      * Pour reconstruire un caractère (String) à partir d’une
      *  suite binaire UTF-8 (ex: "1100001110100111" → "ç")
@@ -113,26 +113,26 @@ public class UTF8Reader {
         // Décodage UTF-8 inverse
         return new String(bytes, StandardCharsets.UTF_8);
     }
-    
+
     /**
      * Détermine la longueur (en octets) d’un caractère UTF-8
      * à partir de son premier octet.
      *
-     * 
+     *
      * En UTF-8, le premier octet d’un caractère indique
      * combien d’octets composent la séquence d’encodage.
      * On identifie ce nombre en regardant les bits de poids fort
      * (les bits les plus à gauche) du premier octet, selon le schéma :
      *
-     * 
+     *
      * 1 octet : 0xxxxxxx
      * 2 octets : 110xxxxx
      * 3 octets : 1110xxxx
      * 4 octets : 11110xxx
      * Suite d’un caractère (non valide en premier octet) : 10xxxxxx
-     * 
      *
-     
+     *
+
      * Cette méthode applique des masques binaires pour isoler les bits de tête :
      *
      *   0b10000000 → garde le bit de poids fort (test du préfixe "0")
@@ -192,15 +192,4 @@ public class UTF8Reader {
         return -1;
     }
 
-
-
-    public static void main(String[] args) throws IOException {
-        readUTF8File("src/utils/test/exemple.txt");
-        int cp = 'ç'; // code point 0x00E7
-        String bits = toUTF8Bits(cp);
-        System.out.println("Bits : " + bits);
-
-        String decoded = fromUTF8Bits(bits);
-        System.out.println("Décodé : " + decoded);
-    }
 }

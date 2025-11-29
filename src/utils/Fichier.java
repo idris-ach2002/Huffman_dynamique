@@ -16,7 +16,8 @@ public class Fichier {
         try (FileInputStream input = new FileInputStream(chemin)) {
             int octet;
             while ((octet = input.read()) != -1) {
-                String bin = Integer.toBinaryString(octet);
+                // pour afficher même les 0 de fort qui sont inutiles pour former le nombre. '00001010'
+                String bin = String.format("%8s", Integer.toBinaryString(octet)).replace(' ', '0');
                 System.out.println(bin);
             }
 
@@ -26,10 +27,9 @@ public class Fichier {
     }
 
     /**
+     * Ecrit la suite de bit qui est dans @src dans un fichier binaire @dst
      * On utilise BufferedReader pour de meilleur performances (grace aux buffers)
      * Source : https://www.w3schools.com/java/java_bufferedreader.asp
-     * Ce n'est pas la meuilleur manière de lire un octet et de l'écrire directement niveau nombre d'netré sortie faites
-     * ! A optimiser après révision de manipulation de fichier
      * @param src Fichier textuelle représentant une chaine de 0 et de 1
      * @param dst Fichier binaire représentant la quite binaire du fichier src
      */
@@ -69,10 +69,6 @@ public class Fichier {
                 int octet = Integer.parseInt(octetString.toString(), 2);
                 output.write(octet);
             }
-
-            // Écrire le padding à la fin (identique à ta version)
-            output.write(padding);
-
             // Flush du buffer avant fermeture
             output.flush();
 
@@ -82,9 +78,9 @@ public class Fichier {
     }
 
     public static void main(String[] args) {
-        //
-        Fichier.ecriture("./src/utils/test/binary_code.txt", "./src/utils/test/output.bin");
-        // On lit le fichier généré
-        Fichier.lecture("./src/utils/test/output.bin");
+        String file = "deux";
+        Fichier.ecriture("./src/utils/test/" + file + ".txt", "./src/utils/test/" + file + ".bin");
+//        // On lit le fichier généré
+        Fichier.lecture("./src/utils/test/" + file + ".bin");
     }
 }
