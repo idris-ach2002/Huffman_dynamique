@@ -58,6 +58,7 @@ public class Fichier {
                 }
             }
 
+           /* D'après les information du prof on gère plus ce cas 
             int padding = 0;
 
             // Gestion du bourrage (même logique)
@@ -72,6 +73,7 @@ public class Fichier {
 
             // Écrire le padding à la fin (identique à ta version)
             output.write(padding);
+            */
 
             // Flush du buffer avant fermeture
             output.flush();
