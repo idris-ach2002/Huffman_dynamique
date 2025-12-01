@@ -7,7 +7,6 @@ import utils.UTF8Decoder;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 
 /**
  * Fournit une procédure de décompression d'un fichier compressé.
@@ -18,7 +17,7 @@ import java.util.ArrayList;
  */
 public class Decompression {
 
-    public static void decompress(String huffCompFile, String dst){
+    public static void decompresser(String huffCompFile, String dst){
         HuffmanTree aha = new HuffmanTree();
         String carSpecial = aha.getCarSpecial().getCaractere();
 

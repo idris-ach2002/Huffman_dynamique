@@ -1,16 +1,20 @@
 package compression;
 
+import utils.Fichier;
+
 public class Main {
+    public static void main(String[] args) throws Exception {
+        if (args.length != 2) {
+            System.err.println("Usage: java compression.Main <input.txt> <output.huff>");
+            System.exit(1);
+        }
+        String input = args[0];
+        String output = args[1];
 
-    public static void main(String[] args) {
-        //Compression comp = new Compression("src/resources/Blaise_Pascal.txt", "src/resources/Blaise_Pascal.huff");
-        //Compression comp = new Compression("src/resources/Carambar.txt", "src/resources/CarambarCompresse.bin");
-        long deb = System.currentTimeMillis();
-        Compression.compresser("src/resources/1.txt", "src/resources/1.huff");
-        long fin = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
+        Compression.compresser(input, output);   // ta méthode existante
+        long end = System.currentTimeMillis();
 
-        System.out.println("Compression à pris => " + ((double)(fin - deb) / 1000.0) + "S");
-
+        Fichier.writeInfos(input, output, end-start, "compression.txt");
     }
-
 }

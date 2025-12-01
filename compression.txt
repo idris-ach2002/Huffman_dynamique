@@ -1,0 +1,2 @@
+./src/resources/Blaise_Pascal.txt;./src/resources/achabou.huff;120304;68297;0.56770;235
+./src/resources/Blaise_Pascal_13Mb.txt;./src/resources/achabou813MB.huff;13951945;7897244;0.56603;8051

@@ -1,6 +1,11 @@
 package utils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Locale;
 
 
 public class Fichier {
@@ -77,10 +82,45 @@ public class Fichier {
         }
     }
 
-    public static void main(String[] args) {
-        String file = "deux";
-        Fichier.ecriture("./src/utils/test/" + file + ".txt", "./src/utils/test/" + file + ".bin");
-//        // On lit le fichier généré
-        Fichier.lecture("./src/utils/test/" + file + ".bin");
+    /**
+
+     */
+
+    /**
+     * Une fonction pour écrire les informations sur les fichiers d'entrées et de soties dans
+     * compression.txt et dans decompression.txt
+     * @param in fichier soit à compressé soit à décompressé
+     * @param out fichier compressé ou bien décompressé
+     * @param time temps de compression/ decompression
+     * @param dst compression.txt ou bien decompression.txt
+     */
+    public static void writeInfos(String in, String out, long time, String dst){
+        try {
+            long inputSize = new File(in).length();
+            long outputSize = new File(out).length();
+
+            double taux = (inputSize == 0) ? 0.0 : (double) outputSize / (double) inputSize;
+            taux = Math.round(taux * 1e5) / 1e5;
+
+            String line = in + ";" +
+                    out + ";" +
+                    inputSize + ";" +
+                    outputSize + ";" +
+                    taux + ";" +
+                    time;
+
+            Files.write(
+                    Paths.get(dst),
+                    (line + System.lineSeparator()).getBytes(StandardCharsets.UTF_8),
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.APPEND
+            );
+
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'écriture dans " + dst);
+            e.printStackTrace();
+        }
     }
+
+
 }

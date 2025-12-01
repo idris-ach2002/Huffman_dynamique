@@ -109,7 +109,7 @@ public class ExperimentLauncher {
                     //   DECOMPRESSION
                     // -----------------------------------------------------------------
                     long t2 = System.nanoTime();
-                    Decompression.decompress(compressed, input + "_decompressed.txt");
+                    Decompression.decompresser(compressed, input + "_decompressed.txt");
                     long t3 = System.nanoTime();
                     long decompressMs = (t3 - t2) / 1_000_000L;
 
@@ -215,7 +215,7 @@ public class ExperimentLauncher {
                     // --------------------------------------------------
 
                     long t2 = System.nanoTime();
-                    Decompression.decompress(compressed,input + "_decompressed.txt" );
+                    Decompression.decompresser(compressed,input + "_decompressed.txt" );
                     long t3 = System.nanoTime();
 
                     long decompressMs = (t3 - t2) / 1_000_000L;

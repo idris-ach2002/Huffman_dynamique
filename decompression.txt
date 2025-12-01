@@ -1,0 +1,2 @@
+./src/resources/achabou.huff;./src/resources/achabou.txt;68297;120304;1.76148;267
+./src/resources/achabou813MB.huff;./src/resources/achabou13mb.txt;7897244;13951946;1.76669;6992

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ "$#" -ne 2 ]; then
+  echo "Usage: decompresser fichier_compresse.huff fichier.txt" >&2
+  exit 1
+fi
+
+INPUT="$1"
+OUTPUT="$2"
+
+# 1) Compilation
+make > /dev/null
+
+JAVA_OUTPUT=$(java -cp bin decompression.Main "$INPUT" "$OUTPUT")
