@@ -5,7 +5,7 @@ public class Main {
 
         long deb = System.currentTimeMillis();
         //Decompression.decompress("src/resources/1.huff", "src/resources/1_decompressed.txt");
-        Decompression.decompress("src/resources/Blaise_Pascal.txt.huff", "src/resources/Blaise_Pascal.txt_decompressed.txt");
+        Decompression.decompress("src/resources/1.huff", "src/resources/1_decompressed.txt");
         //Decompression.decompress("src/utils/test/un.bin", "src/utils/test/un_decompressed.txt");
         long fin = System.currentTimeMillis();
 

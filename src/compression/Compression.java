@@ -63,8 +63,6 @@ public class Compression {
 			}
 			writer.flush();
 
-			//AHA.afficherArbre();
-
 		} catch(IOException ie) {
 			ie.printStackTrace();
 		}
