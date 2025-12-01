@@ -36,7 +36,6 @@ public class UTF8Decoder {
 
         int n_bytes;
         // RQ: firstBit(firstByte) représente l'entré de l'automate
-        System.out.println(firstByte);
         switch (firstBit(firstByte)){
             case "ASCII":
                 return String.valueOf((char) firstByte);

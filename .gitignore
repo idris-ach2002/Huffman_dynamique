@@ -1,6 +1,12 @@
 *.iml
 
 
+### Ressouces Volumineuses du projet
+src/resources/*.txt
+src/resources/*.bin
+resources/*.txt
+resources/*.bin
+
 
 ### IntelliJ IDEA ###
 out/
@@ -149,7 +155,6 @@ local.properties
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear

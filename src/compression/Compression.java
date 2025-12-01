@@ -18,14 +18,15 @@ public class Compression {
 				InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
 
 				// Écriture optimisée : sortie bufferisée (32K)
-				BufferedOutputStream writer = new BufferedOutputStream(new FileOutputStream(dst), 65_536);
-		) {
+				BufferedOutputStream writer = new BufferedOutputStream(new FileOutputStream(dst), 65_536)  ;
+		)
+		{
 
 			int codePoint;
 			int bitBuffer = 0;  // tampon de bits
 			int bitCount = 0;   // nombre de bits dans le tampon
 
-			while ((codePoint = UTF8Reader.readCodePoint(reader)) != -1) {
+			while((codePoint = UTF8Reader.readCodePoint(reader)) != -1) {
 				// Transformer le code point (Unicode) à un caractère à partir de son char UTF-16 java
 				String symbol = new String(Character.toChars(codePoint));
 
@@ -34,11 +35,11 @@ public class Compression {
 				HuffmanTree.Leaf feuille = AHA.getCars().get(symbol);
 				String codeBinaire;
 
-				if (feuille == null) {
+				if(feuille == null) {
 					// Transformer le code point (Unicode) d'un caractère à une suite binaire (lisible Base 2)
 					// caractère n'existe pas (Code de la fuille SP | Code UTF8 du car (en binaire)
 					codeBinaire = AHA.getCarSpecial().getCode() + UTF8Reader.toUTF8Bits(codePoint);
-				} else {
+				}else {
 					// On commence par écrire son code dans l'arbre avant de l'ajouter (pour le décompresseur)
 					codeBinaire = feuille.getCode();
 				}
@@ -56,12 +57,17 @@ public class Compression {
 
 				AHA.modification(symbol);
 			}
+			if (bitCount > 0) {
+				bitBuffer <<= (8 - bitCount);      // on complète avec des 0 à droite
+				writer.write(bitBuffer & 0xFF);
+			}
 			writer.flush();
 
-		} catch (IOException ie) {
+			//AHA.afficherArbre();
+
+		} catch(IOException ie) {
 			ie.printStackTrace();
 		}
-
 	}
 
 }

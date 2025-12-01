@@ -19,7 +19,6 @@ import java.util.ArrayList;
 public class Decompression {
 
     public static void decompress(String huffCompFile, String dst){
-        ArrayList<String> res = new ArrayList<>();
         HuffmanTree aha = new HuffmanTree();
         String carSpecial = aha.getCarSpecial().getCaractere();
 
