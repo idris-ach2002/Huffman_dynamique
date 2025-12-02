@@ -35,7 +35,25 @@ import java.util.Random;
 public class RandomFileGenerator {
 
     /** Alphabet utilisé pour générer les caractères */
-    private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz ";
+    /* 
+        private static final String ALPHABET =
+            "abcdefghijklmnopqrstuvwxyz" +
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+            "0123456789" +
+            " .,;:!?()[]{}-'\""
+    */
+    private static final String ALPHABET = buildAsciiAlphabet();
+
+    private static String buildAsciiAlphabet() {
+        StringBuilder sb = new StringBuilder();
+        for (char c = 32; c <= 126; c++) { // caractères imprimables standard
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+
+    private static final int LINE_LENGTH = 80;
+
 
     /** Générateur pseudo-aléatoire */
     private static Random random = new Random();
@@ -57,9 +75,17 @@ public class RandomFileGenerator {
     public static void generateUniformToFile(int size, String path) throws IOException {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path), 65_536)) {
 
+            int col = 0; // compteur de position dans la ligne
+
             for (int i = 0; i < size; i++) {
                 char c = ALPHABET.charAt(random.nextInt(ALPHABET.length()));
                 bw.write(c);
+                col++;
+
+                if (col >= LINE_LENGTH) {
+                    bw.newLine();   // écrit "\n" de manière portable
+                    col = 0;
+                }
             }
         }
     }
@@ -88,7 +114,6 @@ public class RandomFileGenerator {
     public static void generateFromDistributionToFile(int size, double[] probabilities, String path)
             throws IOException {
 
-        // Construction de la distribution cumulative Ck
         double[] cumulative = new double[probabilities.length];
         cumulative[0] = probabilities[0];
 
@@ -97,6 +122,8 @@ public class RandomFileGenerator {
         }
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path), 65_536)) {
+
+            int col = 0;
 
             for (int i = 0; i < size; i++) {
                 double r = random.nextDouble();
@@ -107,6 +134,12 @@ public class RandomFileGenerator {
                 }
 
                 bw.write(ALPHABET.charAt(index));
+                col++;
+
+                if (col >= LINE_LENGTH) {
+                    bw.newLine();
+                    col = 0;
+                }
             }
         }
     }

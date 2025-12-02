@@ -1,5 +1,9 @@
 package structure;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,7 +15,7 @@ import java.util.TreeSet;
 
 public class HuffmanTree {
 	private Node root;
-	private final Leaf carSpecial = new Leaf();
+	private final Leaf carSpecial = new Leaf(); // C'est le '#'
 
 	/**
 	 * Une collection de donnée sans doublons ordonnée par rapport à la clé
@@ -373,6 +377,127 @@ public class HuffmanTree {
 
 	}
 
+	private int hauteurAHA(Node r) {
+		if (r == null || (r.getLeft() == null && r.getRight() == null)) {
+			return 0;
+		} else {
+			return 1 + Math.max(hauteurAHA(r.getLeft()), hauteurAHA(r.getRight()));
+		}
+	}
+
+	public int hauteurAHA() {
+		return hauteurAHA(root);
+	}
+
+	/**
+	 * Cette méthode est implémantée pour des raison expérimentales c'est exactement
+	 * celle d'avant ou on passe notre Collection ordonnée de feuille selon GDBH
+	 * 
+	 * @param Q
+	 * @param gdbh
+	 * @return
+	 */
+	private Node finBloc2(Node Q, TreeSet<Node> gdbh) {
+		Node res = Q;
+		// tri des Noeuds par Ordre Specialisé
+		SortedSet<Node> tri = gdbh.tailSet(Q); // [Xq -> Xracine]
+		Iterator<Node> it = tri.iterator();
+
+		while (it.hasNext()) {
+			Node courant = it.next();
+			if (res.getOccurence() < courant.getOccurence())
+				return res;
+			else
+				res = courant;
+		}
+
+		return res;
+	}
+
+	/**
+	 * Test de la validité de GDBH (Selon notre ordre de comparaison de Node) et fin
+	 * bloc et successeurNoeudGDBH
+	 * 
+	 * profondeur = 0 [n1] (5) "" | occ=3
+	 * 
+	 * / \ profondeur = 1 profondeur = 1 [n3] (2) [n2] (7) "0" | occ=1 "1" | occ=1
+	 * 
+	 * \ profondeur = 2 [n4] (6) "10" | occ=1
+	 * 
+	 * Résultat attendu
+	 * 
+	 * [ n4 (6) : code="10", profondeur=2, occ=1, n3 (2) : code="0", profondeur=1,
+	 * occ=1, n2 (7) : code="1", profondeur=1, occ=1, n1 (5) : code="",
+	 * profondeur=0, occ=3 ]
+	 * 
+	 * et fin bloc de 6 c'est 7 avec le code 1
+	 */
+	public void test() {
+		Node n1 = new Node(); // 5
+		n1.profondeur = 0;
+		n1.code = "";
+		n1.occurence = 3;
+
+		Node n2 = new Node(); // 7
+		n2.profondeur = 1;
+		n2.code = "1";
+		n2.occurence = 1;
+
+		Node n3 = new Node(); // 2
+		n3.profondeur = 1;
+		n3.code = "0";
+		n3.occurence = 1;
+
+		Node n4 = new Node(); // 6
+		n4.profondeur = 2;
+		n4.code = "10";
+		n4.occurence = 1;
+
+		TreeSet<Node> g = new TreeSet<>();
+		g.add(n1);
+		g.add(n2);
+		g.add(n3);
+		g.add(n4);
+
+		SortedSet<Node> result = g.tailSet(n4);
+		System.out.println("tailset de 6 => 10");
+		System.out.println(result);
+
+		System.out.println("finbloc de 6 => 10");
+		System.out.println(finBloc2(n4, g));
+		System.out.println("successeur de 2 dans GDBH");
+
+		System.out.println(successeurNoeudGDBH(n3, g.tailSet(n4)));
+	}
+
+	public void afficherArbre() {
+		afficherArbreRecur(root, "", true);
+	}
+
+	private void afficherArbreRecur(Node node, String prefix, boolean isTail) {
+		if (node == null)
+			return;
+
+		System.out.println(prefix + (isTail ? "└── " : "├── ") + formatNode(node));
+
+		if (node.getLeft() != null || node.getRight() != null) {
+			if (node.getRight() != null)
+				afficherArbreRecur(node.getRight(), prefix + (isTail ? "    " : "│   "), false);
+			if (node.getLeft() != null)
+				afficherArbreRecur(node.getLeft(), prefix + (isTail ? "    " : "│   "), true);
+		}
+	}
+
+	private String formatNode(Node node) {
+		if (node instanceof Leaf) {
+			Leaf leaf = (Leaf) node;
+			return "Leaf[" + leaf.getCaractere() + "] (occ=" + node.getOccurence() + ", prof=" + node.getProfondeur()
+					+ ", code=" + node.code + ")";
+		} else {
+			return "Node (occ=" + node.getOccurence() + ", prof=" + node.getProfondeur() + ", code=" + node.code + ")";
+		}
+	}
+
 	/**
 	 * Complexité du tailset à analyser
 	 * 
@@ -570,6 +695,10 @@ public class HuffmanTree {
 			return parent;
 		}
 
+		public void setParent(Node parent) {
+			this.parent = parent;
+		}
+
 		public int getOccurence() {
 			return occurence;
 		}
@@ -578,10 +707,21 @@ public class HuffmanTree {
 			this.occurence = occurence;
 		}
 
+		public int getProfondeur() {
+			return profondeur;
+		}
+
 		public String getCode() {
 			return code;
 		}
 
+		public void setCode(String code) {
+			this.code = code;
+		}
+
+		public void setProfondeur(int profondeur) {
+			this.profondeur = profondeur;
+		}
 	}
 
 	public class Leaf extends Node {
@@ -594,7 +734,7 @@ public class HuffmanTree {
 		}
 
 		public Leaf() {
-			this.caractere = "NYT";
+			this.caractere = "#";
 			this.occurence = 0;
 		}
 
@@ -608,5 +748,27 @@ public class HuffmanTree {
 		}
 	}
 
+	public static void construireAHA(String file) {
+		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+			HuffmanTree AHA = new HuffmanTree();
+			String line;
+			while ((line = br.readLine()) != null) {
+				for (int i = 0; i < line.length(); i++) {
+					AHA.modification(line.charAt(i) + "");
+				}
+			}
+
+			AHA.afficherArbre();
+			System.out.println("Hauteur => " + AHA.hauteurAHA());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void main(String[] args) {
+		construireAHA(Paths.get("src/resources/Carambar.txt").toAbsolutePath().toString());
+		System.out.println("Path du Fichier => " + Paths.get("src/resources/Carambar.txt").toAbsolutePath().toString());
+	}
 
 }

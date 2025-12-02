@@ -26,10 +26,6 @@ compile_exp:
 	@$(JAVAC) -cp "$(BIN):$(JARS)" -d $(BIN) $(SRC_EXP)
 	@echo ">> Compilation Experimentation terminée."
 
-experiment: compile compile_exp
-	@echo ">> Lancement expérimentations..."
-	@$(JAVA) -cp "$(BIN)" Experimentation.ExperimentLauncher
-
 plot: compile compile_exp
 	@echo ">> Génération des courbes..."
 	@$(JAVA) -cp "$(BIN):$(JARS)" Experimentation.PlotCurves
@@ -39,3 +35,7 @@ clean:
 	@rm -rf data/*
 	@rm -rf out/*
 	@echo ">> Nettoyage terminé."
+
+experiment: clean compile compile_exp plot
+	@echo ">> Lancement expérimentations..."
+	@$(JAVA) -cp "$(BIN)" Experimentation.ExperimentLauncher

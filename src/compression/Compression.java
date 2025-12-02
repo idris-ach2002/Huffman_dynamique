@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import structure.HuffmanTree;
+import utils.Fichier;
 import utils.UTF8Reader;
 
 public class Compression {
@@ -62,10 +63,23 @@ public class Compression {
 				writer.write(bitBuffer & 0xFF);
 			}
 			writer.flush();
+			AHA.afficherArbre();
 
 		} catch(IOException ie) {
 			ie.printStackTrace();
 		}
+		
+		
+	}
+
+	public static void main(String[] args) {
+        String input = "/home/idris-achabou/git/Huffman_dynamique/data/achaabou.txt";
+        String output = "/home/idris-achabou/git/Huffman_dynamique/data/achaabou.huff";
+
+        long start = System.currentTimeMillis();
+        Compression.compresser(input, output);   // ta méthode existante
+        long end = System.currentTimeMillis();
+		System.out.println("Compression : " + (end-start) + " ms");
 	}
 
 }

@@ -1,2 +1,17 @@
 ./src/resources/Blaise_Pascal.txt;./src/resources/achabou.huff;120304;68297;0.56770;235
 ./src/resources/Blaise_Pascal_13Mb.txt;./src/resources/achabou813MB.huff;13951945;7897244;0.56603;8051
+data/achaabou.txt;data/rachaabou.huff;2058;1382;0.67153;48
+data/achaabou.txt;data/rachaabou.huff;2058;1382;0.67153;51
+data/achaabou.txt;data/rachaabou.huff;2063;1385;0.67135;47
+data/achaabou.txt;data/rachaabou.huff;2063;1386;0.67184;46
+data/achaabou.txt;data/rachaabou.huff;2063;1386;0.67184;49
+data/achaabou.txt;data/rachaabou.huff;2077;1400;0.67405;48
+data/achaabou.txt;data/rachaabou.huff;2061;1384;0.67152;52
+data/achaabou.txt;data/rachaabou.huff;2069;1391;0.67231;45
+data/achaabou.txt;data/rachaabou.huff;2060;1383;0.67136;44
+data/achaabou.txt;data/rachaabou.huff;34;6;0.17647;9
+data/achaabou.txt;data/rachaabou.huff;2084;1410;0.67658;48
+data/achaabou.txt;data/rachaabou.huff;22;6;0.27273;10
+data/achaabou.txt;data/rachaabou.huff;2085;1410;0.67626;58
+data/achaabou.txt;data/rachaabou.huff;2085;1410;0.67626;63
+data/achaabou.txt;data/rachaabou.huff;2085;1410;0.67626;68

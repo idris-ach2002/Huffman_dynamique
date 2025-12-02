@@ -1,2 +1,15 @@
 ./src/resources/achabou.huff;./src/resources/achabou.txt;68297;120304;1.76148;267
 ./src/resources/achabou813MB.huff;./src/resources/achabou13mb.txt;7897244;13951946;1.76669;6992
+data/rachaabou.h;data/achaabou.huff.txt;0;0;0.0;1
+data/rachaabou.huff;data/achaabou.huff.txt;1382;2059;1.48987;46
+data/rachaabou.huff;data/achaabou.huff.txt;1382;2059;1.48987;46
+data/rachaabou.huff;data/achaabou.huff.txt;1385;2063;1.48953;47
+data/rachaabou.huff;data/achaabou.huff.txt;1386;2063;1.48846;49
+data/rachaabou.huff;data/achaabou.huff.txt;1386;2063;1.48846;43
+data/rachaabou.huff;data/achaabou.huff.txt;1400;2085;1.48929;44
+data/rachaabou.huff;data/achaabou.huff.txt;1384;2061;1.48916;47
+data/rachaabou.huff;data/achaabou.huff.txt;1391;2070;1.48814;44
+data/rachaabou.huff;data/achaabou.huff.txt;1383;2060;1.48952;42
+data/rachaabou.huff;data/achaabou.huff.txt;6;34;5.66667;8
+data/rachaabou.huff;data/achaabou.huff.txt;1410;2084;1.47801;45
+data/rachaabou.huff;data/achaabou.huff.txt;6;22;3.66667;11
