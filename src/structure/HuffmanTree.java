@@ -1,9 +1,5 @@
 package structure;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -117,8 +113,8 @@ public class HuffmanTree {
 				gdbh_q = gdbh.tailSet(Q);
 
 				if (ABR_NYT_CHAR(Q) && Q.getParent() == finBloc(Q, gdbh_q)) {
-					System.out.println("Rentée dans le cas rare");
-					System.out.println("[Cas2] Q => " + Q + " , et Parent(Q) => " + Q.getParent());
+					//System.out.println("Rentée dans le cas rare");
+					//System.out.println("[Cas2] Q => " + Q + " , et Parent(Q) => " + Q.getParent());
 					Q.setOccurence(Q.getOccurence() + 1);
 					Q = Q.getParent();
 					// System.out.println("Après les échanges : ");

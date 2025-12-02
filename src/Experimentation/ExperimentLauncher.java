@@ -72,6 +72,8 @@ public class ExperimentLauncher {
                     // Nom de base
                     String name = String.format("structured_%d_%d", size, j+1);
                     String input = Paths.get(DATA_DIR, name).toString();
+                    System.out.println("Processing Current File : " + name);
+
 
                     // -----------------------------------------------------------------
                     //   NOUVELLE GÉNÉRATION : JSON / PYTHON / C en alternance
@@ -189,6 +191,7 @@ public class ExperimentLauncher {
                     // Nom du fichier à générer
                     String name = String.format("rand_%d_%d.txt", size, j+1);
                     String input = Paths.get(DATA_DIR, name).toString();
+                    System.out.println("Processing Current File : " + name);
 
                     // Distribution alternée : Zipf / Uniforme
                     if(j % 2 == 0)
@@ -285,7 +288,7 @@ public class ExperimentLauncher {
      * @param args ignoré ici (utilisé dans la version ProcessBuilder)
      */
     public static void main(String[] args) throws Exception {
-        //experimentTextFiles();
+        experimentTextFiles();
         experimentCodeFiles();
     }
 }

@@ -1,7 +1,5 @@
 package utils;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -48,7 +46,7 @@ public class UTF8Decoder {
             case "FOUR_BYTES":
                 n_bytes = 4;
                 break;
-            default: throw new UTF8DecodeException();
+            default: throw new UTF8DecodeException("Function Decode Fault Signal");
         }
         // le code point resultant des concaténations des octets de l'UTF8
         int codePoint = getKiemesBits(8-(n_bytes+1), firstByte); // on recup les premiers bits en ignorant les "110", "1110" etc
@@ -58,7 +56,7 @@ public class UTF8Decoder {
                 // On concatene avec les 6 bits restant après le "10"
                 codePoint = concatBits(codePoint,getKiemesBits(6, octet));
             }else{
-                throw new UTF8DecodeException();
+                throw new UTF8DecodeException("Function concatBits In The body of Decode Function Fault Signal");
             }
         }
         // très important, à cause du fait que java  utilise de l'UTF-16
@@ -75,7 +73,7 @@ public class UTF8Decoder {
 
     private static String secondBit(int byte_) throws UTF8DecodeException{
         if (getIemeBit(6, byte_) == 1) return thirdBit(byte_);
-        throw new UTF8DecodeException();
+        throw new UTF8DecodeException("Second Bit Function");
     }
 
     private static String thirdBit(int byte_) throws UTF8DecodeException{
@@ -91,7 +89,7 @@ public class UTF8Decoder {
     }
 
     private static String fifthBit(int byte_) throws UTF8DecodeException{
-        if (getIemeBit(3, byte_) == 1) throw new UTF8DecodeException();;
+        if (getIemeBit(3, byte_) == 1) throw new UTF8DecodeException("fifth Bit Function");
         // Dans le cas: 11110
         return "FOUR_BYTES";
     }

@@ -23,7 +23,7 @@ compile:
 compile_exp:
 	@echo ">> Compilation des fichiers Experimentation..."
 	@mkdir -p $(BIN)
-	@$(JAVAC) -cp "$(BIN)" -d $(BIN) $(SRC_EXP)
+	@$(JAVAC) -cp "$(BIN):$(JARS)" -d $(BIN) $(SRC_EXP)
 	@echo ">> Compilation Experimentation terminée."
 
 experiment: compile compile_exp
