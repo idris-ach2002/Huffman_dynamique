@@ -13,3 +13,6 @@ data/rachaabou.huff;data/achaabou.huff.txt;1383;2060;1.48952;42
 data/rachaabou.huff;data/achaabou.huff.txt;6;34;5.66667;8
 data/rachaabou.huff;data/achaabou.huff.txt;1410;2084;1.47801;45
 data/rachaabou.huff;data/achaabou.huff.txt;6;22;3.66667;11
+./data/rand_500000_5.bin;./data/rand_500000_5_decompressed.txt;2191;3279;1.49658;344
+src/resources/fail1_restricted.bin;src/resources/fail1_restricted_decomp.txt;2191;3279;1.49658;952
+data/test.bin;data/test_decomp.txt;8;7;0.875;142

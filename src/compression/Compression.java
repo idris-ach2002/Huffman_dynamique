@@ -62,8 +62,9 @@ public class Compression {
 				bitBuffer <<= (8 - bitCount);      // on complète avec des 0 à droite
 				writer.write(bitBuffer & 0xFF);
 			}
+
 			writer.flush();
-			AHA.afficherArbre();
+			//AHA.afficherArbre();
 
 		} catch(IOException ie) {
 			ie.printStackTrace();

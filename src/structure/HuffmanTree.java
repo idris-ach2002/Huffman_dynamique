@@ -4,14 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NavigableSet;
-import java.util.SortedSet;
-import java.util.Stack;
-import java.util.TreeSet;
+import java.util.*;
 
 public class HuffmanTree {
 	private Node root;
@@ -36,6 +29,7 @@ public class HuffmanTree {
 		this.root = this.carSpecial;
 		this.root.code = "";
 		this.root.profondeur = 0;
+		this.gdbh.add(root);
 	}
 
 	/**
@@ -45,6 +39,10 @@ public class HuffmanTree {
 	 * @param c caractère qu'on vient de lire
 	 */
 	public void modification(String c) {
+		if (Objects.equals("C", c)){
+			System.out.println("debut insertion de C");
+		}
+		boolean flag = false;
 		// 1 er Cas si l'arbre est vide
 		if (root == carSpecial) {
 			/*
@@ -56,18 +54,19 @@ public class HuffmanTree {
 			root.setLeft(carSpecial);
 			root.setRight(newCar);
 			root.setOccurence(1);
-
 			root.majProfondeur(); // Màj Profondeur des fils
 			root.majCode(); // Màj code des fils
-
 			// Ajout du Noeud interne et La feuille qui représente le caractère dans GDBH
 			gdbh.add(root);
 			gdbh.add(newCar);
 
+			//System.out.println(gdbh);
+
 			// Ajout du caractère à la liste des caractères rencontrés
 			cars.put(c, newCar);
 		} else { // L'arbre n'est pas vide
-
+			// !! deja à droite
+			//if (Objects.equals(c, "}")) System.out.println(gdbh);
 			// Parent de ('#') ou c'est la feuille(c)
 			Node Q = null;
 			// Flag pour savoir si C est présent ou pas
@@ -114,10 +113,13 @@ public class HuffmanTree {
 
 			} else {
 				Q = feuille_c;
+				if(Objects.equals(feuille_c.getCaractere(), "}")){
+					flag = true;
+				}
 				gdbh_q = gdbh.tailSet(Q);
 
 				if (ABR_NYT_CHAR(Q) && Q.getParent() == finBloc(Q, gdbh_q)) {
-					//System.out.println("Rentée dans le cas rare");
+					//System.out.println("Rentée dans le cas rare avec : " + c);
 					//System.out.println("[Cas2] Q => " + Q + " , et Parent(Q) => " + Q.getParent());
 					Q.setOccurence(Q.getOccurence() + 1);
 					Q = Q.getParent();
@@ -131,8 +133,79 @@ public class HuffmanTree {
 			}
 
 			// S'assurer de la validité de AHD Après (Insertion | MàJ) d'un caractère
-			traitement(Q, gdbh_q);
+			if (Objects.equals(c, "}")){
+				// à ce momemnt NYT etait deja à droite
+//				if(flag) System.out.println(gdbh);
+				traitement(Q, gdbh, flag);
+
+
+			}else{
+				traitement(Q, gdbh, false);
+			}
+
+			if (gdbh.getFirst() != carSpecial)
+				System.out.println("first diff de Nyt");
+
+			if(carSpecial.getParent().getRight() == carSpecial)
+				System.out.println("NYT est à droite après insertion de " + c);
+
+
+
 		}
+	}
+
+	/**
+	 * Cette méthode permet de mettre à jour les occurences (Poids) des noeuds de Q
+	 * jusqu'à la racine tout on veillant sur la correction et la validité de l'AHD
+	 * obtenu
+	 *
+	 * @param Q
+	 */
+	public void traitement(Node Q, SortedSet<Node> gdbh_q, boolean f) {
+		// On regarde le chemin direct de Q jusqu ’à la racine
+		// ΓQ = [Q, Qi1, ..., Qik] x_i0 , ..., x_ik = les num des noeuds de Gamma_Q
+
+		// Si le chemin est incémentable alors On Ajoute 1 à chaque poids sur le chemin
+		// de Gamma_Q
+		// !!PB GDBH
+//		if(f){
+//			System.out.println("Entré dans Traitement : " + gdbh);
+//		}
+		List<Node> chemin = directPath(Q);
+		//!! PB GDBH
+//		if(f){
+//			System.out.println("Entré dans Traitement : " + gdbh);
+//		}
+		Node m = estIncrementable(chemin, gdbh_q);
+
+		if (m == null) {
+			for (Node noeud : chemin) {
+				noeud.setOccurence(noeud.getOccurence() + 1);
+			}
+		} else { // le chemin n'est pas incémentable
+		// !! PB gdbh
+//						if(f){
+//				System.out.println("Traitement avant finBloc: " + gdbh);
+//			}
+			Node b = finBloc(m, gdbh_q);
+
+			// Ajoute 1 à chaque poids du chemin de Q a Q_m
+			incrementerChemin(Q, m, chemin);
+
+			// Échanger dans H les sous − arbres enracin és en Q_m et Q_b
+
+			// !! Affiche avec erreur le GDBH
+//			if(f){
+//				System.out.println("Traitement avant permute: " + gdbh);
+//			}
+			permute(m, b);
+
+			// On Propage la correction vers le parent pour mettre à jour les occurences
+			// (poids)
+			// jusqu'à la racine
+			traitement(m.getParent(), gdbh.tailSet(m.getParent()), false);
+		}
+
 	}
 
 	public boolean ABR_NYT_CHAR(Node Q) {
@@ -163,50 +236,23 @@ public class HuffmanTree {
 		while (it.hasNext()) {
 			Node courant = it.next();
 			if (res.getOccurence() < courant.getOccurence())
+			{
+				if (res == carSpecial){
+					// !! le seul moment ou on permute NYT son code n'est deja plus le plsu à gauche
+					//System.out.println("m etant : " + Q);
+//					System.out.println("Pas normal b ne peut pas etre NYT : " + res);
+				}
 				return res;
+			}
+
 			else
 				res = courant;
 		}
-
+		//if (res == carSpecial) System.out.println("Pas normal b ne peut pas etre NYT : " + res);
 		return res;
 	}
 
-	/**
-	 * Cette méthode permet de mettre à jour les occurences (Poids) des noeuds de Q
-	 * jusqu'à la racine tout on veillant sur la correction et la validité de l'AHD
-	 * obtenu
-	 * 
-	 * @param Q
-	 */
-	public void traitement(Node Q, SortedSet<Node> gdbh_q) {
-		// On regarde le chemin direct de Q jusqu ’à la racine
-		// ΓQ = [Q, Qi1, ..., Qik] x_i0 , ..., x_ik = les num des noeuds de Gamma_Q
 
-		// Si le chemin est incémentable alors On Ajoute 1 à chaque poids sur le chemin
-		// de Gamma_Q
-		List<Node> chemin = directPath(Q);
-
-		Node m = estIncrementable(chemin, gdbh_q);
-		if (m == null) {
-			for (Node noeud : chemin) {
-				noeud.setOccurence(noeud.getOccurence() + 1);
-			}
-		} else { // le chemin n'est pas incémentable
-			Node b = finBloc(m, gdbh_q);
-
-			// Ajoute 1 à chaque poids du chemin de Q a Q_m
-			incrementerChemin(Q, m, chemin);
-
-			// Échanger dans H les sous − arbres enracin és en Q_m et Q_b
-			permute(m, b);
-
-			// On Propage la correction vers le parent pour mettre à jour les occurences
-			// (poids)
-			// jusqu'à la racine
-			traitement(m.getParent(), gdbh.tailSet(m.getParent()));
-		}
-
-	}
 
 	/**
 	 * Cette Méthode incrémente les poids des noeuds dans le chemin [ Xq -> Xm] On
@@ -291,6 +337,11 @@ public class HuffmanTree {
 	 * @param b
 	 */
 	public void permute(Node m, Node b) {
+
+//		if (m == carSpecial || b == carSpecial){
+//			System.out.println("Pas normal permutation de # m = " + m + "b = " + b);
+//		}
+
 		Node parentB = b.getParent();
 		Node parentM = m.getParent();
 
@@ -628,6 +679,7 @@ public class HuffmanTree {
 		 * n’ont pas d’enfants.
 		 */
 		public void majProfondeur() {
+			//removeFromGDBH(this);
 			Stack<Node> stack = new Stack<>();
 
 			stack.push(this); // Démarrage depuis le nœud courant (racine)
@@ -641,6 +693,7 @@ public class HuffmanTree {
 					stack.push(current.right);
 				}
 			}
+			//addToGDBH(this);
 		}
 
 		/**
@@ -658,6 +711,7 @@ public class HuffmanTree {
 		 * leur parent).
 		 */
 		public void majCode() {
+			//removeFromGDBH(this);
 			Stack<Node> stack = new Stack<>();
 
 			stack.push(this); // Démarrage depuis le nœud courant (racine)
@@ -672,6 +726,7 @@ public class HuffmanTree {
 
 				}
 			}
+			//addToGDBH(this);
 		}
 
 		protected String toStr() {
@@ -734,7 +789,7 @@ public class HuffmanTree {
 		}
 
 		public Leaf() {
-			this.caractere = "#";
+			this.caractere = "NYT";
 			this.occurence = 0;
 		}
 

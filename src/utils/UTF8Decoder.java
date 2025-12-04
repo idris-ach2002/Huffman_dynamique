@@ -56,7 +56,7 @@ public class UTF8Decoder {
                 // On concatene avec les 6 bits restant après le "10"
                 codePoint = concatBits(codePoint,getKiemesBits(6, octet));
             }else{
-                throw new UTF8DecodeException("Function concatBits In The body of Decode Function Fault Signal");
+                throw new UTF8DecodeException("Not valid continuation byte");
             }
         }
         // très important, à cause du fait que java  utilise de l'UTF-16

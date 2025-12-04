@@ -4,12 +4,14 @@ import utils.Fichier;
 
 public class Main {
     public static void main(String[] args) {
-        if (args.length != 2) {
-            System.err.println("Usage: java compression.Main <input.txt> <output.huff>");
-            System.exit(1);
-        }
-        String input = args[0];
-        String output = args[1];
+//        if (args.length != 2) {
+//            System.err.println("Usage: java compression.Main <input.txt> <output.huff>");
+//            System.exit(1);
+//        }
+        //String input = args[0];
+        String input = "data/test.bin";
+        //String output = args[1];
+        String output ="data/test_decomp.txt";
 
         long start = System.currentTimeMillis();
         //Decompression.decompress("src/resources/1.huff", "src/resources/1_decompressed.txt");
