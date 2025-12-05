@@ -9,6 +9,7 @@ import java.util.*;
 public class HuffmanTree {
 	private Node root;
 	private final Leaf carSpecial = new Leaf(); // C'est le '#'
+	private int cpt_C = 0;
 
 	/**
 	 * Une collection de donnée sans doublons ordonnée par rapport à la clé
@@ -39,8 +40,12 @@ public class HuffmanTree {
 	 * @param c caractère qu'on vient de lire
 	 */
 	public void modification(String c) {
-		if (Objects.equals("C", c)){
-			System.out.println("debut insertion de C");
+		if (Objects.equals("C", c) ){
+			cpt_C++;
+			if(cpt_C == 4){
+				System.out.println("debut insertion de C");
+				this.afficherArbre();
+			}
 		}
 		boolean flag = false;
 		// 1 er Cas si l'arbre est vide
@@ -60,13 +65,9 @@ public class HuffmanTree {
 			gdbh.add(root);
 			gdbh.add(newCar);
 
-			//System.out.println(gdbh);
-
 			// Ajout du caractère à la liste des caractères rencontrés
 			cars.put(c, newCar);
 		} else { // L'arbre n'est pas vide
-			// !! deja à droite
-			//if (Objects.equals(c, "}")) System.out.println(gdbh);
 			// Parent de ('#') ou c'est la feuille(c)
 			Node Q = null;
 			// Flag pour savoir si C est présent ou pas
@@ -123,34 +124,30 @@ public class HuffmanTree {
 					//System.out.println("[Cas2] Q => " + Q + " , et Parent(Q) => " + Q.getParent());
 					Q.setOccurence(Q.getOccurence() + 1);
 					Q = Q.getParent();
-					// System.out.println("Après les échanges : ");
-					// System.out.println("Q => " + feuille_c + " , et Parent(Q) => " + Q);
 					// On recalcule le nouveau chemin direct car maintenent Q est devenu l'encêtre
 					gdbh_q = gdbh.tailSet(Q);
-					// System.out.println("Nouveau chemin GDBH pour Q : " + Q);
-					// System.out.println(gdbh_q);
 				}
 			}
 
 			// S'assurer de la validité de AHD Après (Insertion | MàJ) d'un caractère
 			if (Objects.equals(c, "}")){
-				// à ce momemnt NYT etait deja à droite
-//				if(flag) System.out.println(gdbh);
 				traitement(Q, gdbh, flag);
-
-
 			}else{
 				traitement(Q, gdbh, false);
 			}
 
 			if (gdbh.getFirst() != carSpecial)
-				System.out.println("first diff de Nyt");
+				System.out.println("Nyt not first gdbh");
 
-			if(carSpecial.getParent().getRight() == carSpecial)
-				System.out.println("NYT est à droite après insertion de " + c);
+			checkOccurences(root);
+		}
+	}
 
-
-
+	public void checkOccurences(Node n){
+		if(!(n instanceof Leaf)){
+			assert (n.occurence == n.left.occurence + n.right.occurence);
+			checkOccurences(n.left);
+			checkOccurences(n.right);
 		}
 	}
 
@@ -167,15 +164,7 @@ public class HuffmanTree {
 
 		// Si le chemin est incémentable alors On Ajoute 1 à chaque poids sur le chemin
 		// de Gamma_Q
-		// !!PB GDBH
-//		if(f){
-//			System.out.println("Entré dans Traitement : " + gdbh);
-//		}
 		List<Node> chemin = directPath(Q);
-		//!! PB GDBH
-//		if(f){
-//			System.out.println("Entré dans Traitement : " + gdbh);
-//		}
 		Node m = estIncrementable(chemin, gdbh_q);
 
 		if (m == null) {
@@ -183,21 +172,12 @@ public class HuffmanTree {
 				noeud.setOccurence(noeud.getOccurence() + 1);
 			}
 		} else { // le chemin n'est pas incémentable
-		// !! PB gdbh
-//						if(f){
-//				System.out.println("Traitement avant finBloc: " + gdbh);
-//			}
 			Node b = finBloc(m, gdbh_q);
 
 			// Ajoute 1 à chaque poids du chemin de Q a Q_m
 			incrementerChemin(Q, m, chemin);
 
 			// Échanger dans H les sous − arbres enracin és en Q_m et Q_b
-
-			// !! Affiche avec erreur le GDBH
-//			if(f){
-//				System.out.println("Traitement avant permute: " + gdbh);
-//			}
 			permute(m, b);
 
 			// On Propage la correction vers le parent pour mettre à jour les occurences
@@ -237,18 +217,12 @@ public class HuffmanTree {
 			Node courant = it.next();
 			if (res.getOccurence() < courant.getOccurence())
 			{
-				if (res == carSpecial){
-					// !! le seul moment ou on permute NYT son code n'est deja plus le plsu à gauche
-					//System.out.println("m etant : " + Q);
-//					System.out.println("Pas normal b ne peut pas etre NYT : " + res);
-				}
 				return res;
 			}
 
 			else
 				res = courant;
 		}
-		//if (res == carSpecial) System.out.println("Pas normal b ne peut pas etre NYT : " + res);
 		return res;
 	}
 
@@ -337,10 +311,6 @@ public class HuffmanTree {
 	 * @param b
 	 */
 	public void permute(Node m, Node b) {
-
-//		if (m == carSpecial || b == carSpecial){
-//			System.out.println("Pas normal permutation de # m = " + m + "b = " + b);
-//		}
 
 		Node parentB = b.getParent();
 		Node parentM = m.getParent();

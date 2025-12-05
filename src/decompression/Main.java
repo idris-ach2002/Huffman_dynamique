@@ -9,7 +9,7 @@ public class Main {
 //            System.exit(1);
 //        }
         //String input = args[0];
-        String input = "data/test.bin";
+        String input = "data/final_fail.bin";
         //String output = args[1];
         String output ="data/test_decomp.txt";
 

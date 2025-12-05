@@ -141,3 +141,16 @@ data/rand_500000_5.txt;data/rand_500000_5.bin;2328;1575;0.67655;40937
 data/rand_500000_5.txt;data/rand_500000_5.bin;2328;1575;0.67655;355481
 data/rand_500000_5.txt;data/rand_500000_5.bin;2328;1575;0.67655;646383
 data/rand_500000_5.txt;data/rand_500000_5.bin;2328;1575;0.67655;543145
+data/final_fail.txt;data/final_fail.bin;2328;1575;0.67655;229
+data/final_fail.txt;data/final_fail.bin;2328;1575;0.67655;161
+src/resources/Blaise_Pascal.txt;data/final_fail.bin;120304;68297;0.5677;889
+src/resources/Blaise_Pascal.txt;data/final_fail.bin;120304;68297;0.5677;1068
+src/resources/Blaise_Pascal.txt;data/final_fail.bin;120304;68297;0.5677;311970
+data/final_fail.txt;data/final_fail.bin;2328;1575;0.67655;394
+data/final_fail.txt;data/final_fail.bin;2328;1575;0.67655;398
+data/final_fail.txt;data/final_fail.bin;2328;1575;0.67655;300
+data/final_fail.txt;data/final_fail.bin;2328;1575;0.67655;231
+data/final_fail.txt;data/final_fail.bin;2328;1575;0.67655;275
+data/final_fail.txt;data/final_fail.bin;2328;1575;0.67655;200
+data/final_fail.txt;data/final_fail.bin;2328;1575;0.67655;50437002
+data/final_fail.txt;data/final_fail.bin;2331;1578;0.67696;162

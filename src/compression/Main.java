@@ -11,7 +11,7 @@ public class Main {
         //String input = args[0];
         String input = "data/final_fail.txt";
         //String output = args[1];
-        String output ="data/rand_500000_5.bin";
+        String output ="data/final_fail.bin";
 
         long start = System.currentTimeMillis();
         Compression.compresser(input, output);   // ta méthode existante
