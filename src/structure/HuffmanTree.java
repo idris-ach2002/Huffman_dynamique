@@ -139,7 +139,7 @@ public class HuffmanTree {
 			if (gdbh.getFirst() != carSpecial)
 				System.out.println("Nyt not first gdbh");
 
-			checkOccurences(root);
+			//checkOccurences(root);
 		}
 	}
 

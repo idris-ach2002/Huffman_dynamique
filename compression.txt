@@ -154,3 +154,6 @@ data/final_fail.txt;data/final_fail.bin;2328;1575;0.67655;275
 data/final_fail.txt;data/final_fail.bin;2328;1575;0.67655;200
 data/final_fail.txt;data/final_fail.bin;2328;1575;0.67655;50437002
 data/final_fail.txt;data/final_fail.bin;2331;1578;0.67696;162
+data/final_fail.txt;data/final_fail.bin;2332;1579;0.6771;244
+data/final_fail.txt;data/final_fail.bin;2365;1612;0.68161;160
+data/final_fail.txt;data/final_fail.bin;2380;1626;0.68319;247

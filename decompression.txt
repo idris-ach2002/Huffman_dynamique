@@ -20,3 +20,6 @@ data/final_fail.bin;data/test_decomp.txt;1575;2328;1.4781;803
 data/final_fail.bin;data/test_decomp.txt;1575;2328;1.4781;156
 data/final_fail.bin;data/test_decomp.txt;1575;2328;1.4781;165
 data/final_fail.bin;data/test_decomp.txt;1578;2332;1.47782;183
+data/final_fail.bin;data/test_decomp.txt;1579;2332;1.47688;214
+data/final_fail.bin;data/test_decomp.txt;1612;2365;1.46712;220
+data/final_fail.bin;data/test_decomp.txt;1626;2385;1.46679;183

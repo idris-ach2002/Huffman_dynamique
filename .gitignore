@@ -2,7 +2,6 @@
 
 
 ### Ressouces Volumineuses du projet
-src/resources/*.txt
 src/resources/*.bin
 resources/*.txt
 resources/*.bin
