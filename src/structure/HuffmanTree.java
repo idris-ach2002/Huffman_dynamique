@@ -4,12 +4,22 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NavigableSet;
+import java.util.SortedSet;
+import java.util.Stack;
+import java.util.TreeSet;
 
 public class HuffmanTree {
 	private Node root;
 	private final Leaf carSpecial = new Leaf(); // C'est le '#'
-	private int cpt_C = 0;
+	private int compteur;
+	private String currentProcess;
+	private String preProcess;
+
 
 	/**
 	 * Une collection de donnée sans doublons ordonnée par rapport à la clé
@@ -30,7 +40,9 @@ public class HuffmanTree {
 		this.root = this.carSpecial;
 		this.root.code = "";
 		this.root.profondeur = 0;
-		this.gdbh.add(root);
+		gdbh.add(root);
+		compteur = 0;
+		currentProcess = preProcess = null;
 	}
 
 	/**
@@ -40,14 +52,17 @@ public class HuffmanTree {
 	 * @param c caractère qu'on vient de lire
 	 */
 	public void modification(String c) {
-		if (Objects.equals("C", c) ){
-			cpt_C++;
-			if(cpt_C == 4){
-				System.out.println("debut insertion de C");
-				this.afficherArbre();
-			}
+		compteur++;
+		if(currentProcess == null) {
+			currentProcess = c;
+		} else {
+			preProcess = currentProcess;
+			currentProcess = c;
 		}
-		boolean flag = false;
+		//System.out.println("Rentré dans modification étape " + compteur + " Lors de l'insertion de CAR = " + currentProcess
+					//+ " Etape précédente CAR = " + preProcess
+		//);
+
 		// 1 er Cas si l'arbre est vide
 		if (root == carSpecial) {
 			/*
@@ -59,8 +74,10 @@ public class HuffmanTree {
 			root.setLeft(carSpecial);
 			root.setRight(newCar);
 			root.setOccurence(1);
+
 			root.majProfondeur(); // Màj Profondeur des fils
 			root.majCode(); // Màj code des fils
+
 			// Ajout du Noeud interne et La feuille qui représente le caractère dans GDBH
 			gdbh.add(root);
 			gdbh.add(newCar);
@@ -68,6 +85,7 @@ public class HuffmanTree {
 			// Ajout du caractère à la liste des caractères rencontrés
 			cars.put(c, newCar);
 		} else { // L'arbre n'est pas vide
+
 			// Parent de ('#') ou c'est la feuille(c)
 			Node Q = null;
 			// Flag pour savoir si C est présent ou pas
@@ -114,79 +132,72 @@ public class HuffmanTree {
 
 			} else {
 				Q = feuille_c;
-				if(Objects.equals(feuille_c.getCaractere(), "}")){
-					flag = true;
-				}
 				gdbh_q = gdbh.tailSet(Q);
 
 				if (ABR_NYT_CHAR(Q) && Q.getParent() == finBloc(Q, gdbh_q)) {
-					//System.out.println("Rentée dans le cas rare avec : " + c);
+					//System.out.println("Rentée dans le cas rare");
 					//System.out.println("[Cas2] Q => " + Q + " , et Parent(Q) => " + Q.getParent());
 					Q.setOccurence(Q.getOccurence() + 1);
 					Q = Q.getParent();
+					// System.out.println("Après les échanges : ");
+					// System.out.println("Q => " + feuille_c + " , et Parent(Q) => " + Q);
 					// On recalcule le nouveau chemin direct car maintenent Q est devenu l'encêtre
 					gdbh_q = gdbh.tailSet(Q);
+					// System.out.println("Nouveau chemin GDBH pour Q : " + Q);
+					// System.out.println(gdbh_q);
 				}
 			}
 
 			// S'assurer de la validité de AHD Après (Insertion | MàJ) d'un caractère
-			if (Objects.equals(c, "}")){
-				traitement(Q, gdbh, flag);
-			}else{
-				traitement(Q, gdbh, false);
+			traitement(Q, gdbh_q);
+			try {
+				verifierNYT(root);
+				verifierOccurs(root);
+				 verifierSpecial();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void verifierNYT(Node n) throws Exception{
+		if(n != null) {
+			if(n.profondeur > carSpecial.getProfondeur()) {
+				System.out.println("Problème identifié à l'étape " + compteur + " Lors de l'insertion de CAR = " + currentProcess
+					+ " Etape précédente CAR = " + preProcess
+				);
+				throw new Exception("NYT à droite");
 			}
 
-			if (gdbh.getFirst() != carSpecial)
-				System.out.println("Nyt not first gdbh");
-
-			//checkOccurences(root);
+			verifierNYT(n.left);
+			verifierNYT(n.right);
 		}
 	}
 
-	public void checkOccurences(Node n){
-		if(!(n instanceof Leaf)){
-			assert (n.occurence == n.left.occurence + n.right.occurence);
-			checkOccurences(n.left);
-			checkOccurences(n.right);
+	public void verifierSpecial() throws Exception {
+		if(carSpecial.parent.left != carSpecial) {
+			System.out.println("Problème identifié à l'étape " + compteur + " Lors de l'insertion de CAR = " + currentProcess
+					+ " Etape précédente CAR = " + preProcess
+				);
+				throw new Exception("NYT n'est pas à gauche de son père");
 		}
 	}
 
-	/**
-	 * Cette méthode permet de mettre à jour les occurences (Poids) des noeuds de Q
-	 * jusqu'à la racine tout on veillant sur la correction et la validité de l'AHD
-	 * obtenu
-	 *
-	 * @param Q
-	 */
-	public void traitement(Node Q, SortedSet<Node> gdbh_q, boolean f) {
-		// On regarde le chemin direct de Q jusqu ’à la racine
-		// ΓQ = [Q, Qi1, ..., Qik] x_i0 , ..., x_ik = les num des noeuds de Gamma_Q
 
-		// Si le chemin est incémentable alors On Ajoute 1 à chaque poids sur le chemin
-		// de Gamma_Q
-		List<Node> chemin = directPath(Q);
-		Node m = estIncrementable(chemin, gdbh_q);
-
-		if (m == null) {
-			for (Node noeud : chemin) {
-				noeud.setOccurence(noeud.getOccurence() + 1);
+	public void verifierOccurs(Node n) throws Exception{
+		if(n != null) {
+			if(n.occurence != (n.left.occurence + n.right.occurence)) {
+				System.out.println("Problème identifié à l'étape " + compteur + " Lors de l'insertion de CAR = " + currentProcess
+					+ " Etape précédente CAR = " + preProcess
+				);
+				throw new Exception("Occurence fausse " + n + " gauche " + n.left + " , Droite " + n.right);
 			}
-		} else { // le chemin n'est pas incémentable
-			Node b = finBloc(m, gdbh_q);
 
-			// Ajoute 1 à chaque poids du chemin de Q a Q_m
-			incrementerChemin(Q, m, chemin);
-
-			// Échanger dans H les sous − arbres enracin és en Q_m et Q_b
-			permute(m, b);
-
-			// On Propage la correction vers le parent pour mettre à jour les occurences
-			// (poids)
-			// jusqu'à la racine
-			traitement(m.getParent(), gdbh.tailSet(m.getParent()), false);
+			verifierNYT(n.left);
+			verifierNYT(n.right);
 		}
-
 	}
+
 
 	public boolean ABR_NYT_CHAR(Node Q) {
 		Node p = Q.getParent();
@@ -216,17 +227,50 @@ public class HuffmanTree {
 		while (it.hasNext()) {
 			Node courant = it.next();
 			if (res.getOccurence() < courant.getOccurence())
-			{
 				return res;
-			}
-
 			else
 				res = courant;
 		}
+
 		return res;
 	}
 
+	/**
+	 * Cette méthode permet de mettre à jour les occurences (Poids) des noeuds de Q
+	 * jusqu'à la racine tout on veillant sur la correction et la validité de l'AHD
+	 * obtenu
+	 * 
+	 * @param Q
+	 */
+	public void traitement(Node Q, SortedSet<Node> gdbh_q) {
+		// On regarde le chemin direct de Q jusqu ’à la racine
+		// ΓQ = [Q, Qi1, ..., Qik] x_i0 , ..., x_ik = les num des noeuds de Gamma_Q
 
+		// Si le chemin est incémentable alors On Ajoute 1 à chaque poids sur le chemin
+		// de Gamma_Q
+		List<Node> chemin = directPath(Q);
+
+		Node m = estIncrementable(chemin, gdbh_q);
+		if (m == null) {
+			for (Node noeud : chemin) {
+				noeud.setOccurence(noeud.getOccurence() + 1);
+			}
+		} else { // le chemin n'est pas incémentable
+			Node b = finBloc(m, gdbh_q);
+
+			// Ajoute 1 à chaque poids du chemin de Q a Q_m
+			incrementerChemin(Q, m, chemin);
+
+			// Échanger dans H les sous − arbres enracin és en Q_m et Q_b
+			permute(m, b);
+
+			// On Propage la correction vers le parent pour mettre à jour les occurences
+			// (poids)
+			// jusqu'à la racine
+			traitement(m.getParent(), gdbh.tailSet(m.getParent()));
+		}
+
+	}
 
 	/**
 	 * Cette Méthode incrémente les poids des noeuds dans le chemin [ Xq -> Xm] On
@@ -311,7 +355,6 @@ public class HuffmanTree {
 	 * @param b
 	 */
 	public void permute(Node m, Node b) {
-
 		Node parentB = b.getParent();
 		Node parentM = m.getParent();
 
@@ -557,6 +600,7 @@ public class HuffmanTree {
 		}
 
 		return res;
+
 	}
 
 	public HashMap<String, Leaf> getCars() {
@@ -648,7 +692,6 @@ public class HuffmanTree {
 		 * n’ont pas d’enfants.
 		 */
 		public void majProfondeur() {
-			//removeFromGDBH(this);
 			Stack<Node> stack = new Stack<>();
 
 			stack.push(this); // Démarrage depuis le nœud courant (racine)
@@ -662,7 +705,6 @@ public class HuffmanTree {
 					stack.push(current.right);
 				}
 			}
-			//addToGDBH(this);
 		}
 
 		/**
@@ -680,7 +722,6 @@ public class HuffmanTree {
 		 * leur parent).
 		 */
 		public void majCode() {
-			//removeFromGDBH(this);
 			Stack<Node> stack = new Stack<>();
 
 			stack.push(this); // Démarrage depuis le nœud courant (racine)
@@ -695,7 +736,6 @@ public class HuffmanTree {
 
 				}
 			}
-			//addToGDBH(this);
 		}
 
 		protected String toStr() {
@@ -758,7 +798,7 @@ public class HuffmanTree {
 		}
 
 		public Leaf() {
-			this.caractere = "NYT";
+			this.caractere = "#";
 			this.occurence = 0;
 		}
 

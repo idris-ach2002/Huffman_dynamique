@@ -73,4 +73,17 @@ public class Decompression {
         return ((HuffmanTree.Leaf) n).getCaractere();
     }
 
+
+
+	public static void main(String[] args) {
+        String input = "/home/idris-achabou/git/Huffman_dynamique/data/final_fail.huff";
+        String output = "/home/idris-achabou/git/Huffman_dynamique/data/final_fail_decompressed.txt";
+
+        long start = System.currentTimeMillis();
+        Decompression.decompresser(input, output);   // ta méthode existante
+        long end = System.currentTimeMillis();
+		System.out.println("Compression : " + (end-start) + " ms");
+	}
+
+
 }

@@ -76,8 +76,8 @@ public class Compression {
 	}
 
 	public static void main(String[] args) {
-        String input = "/home/idris-achabou/git/Huffman_dynamique/data/achaabou.txt";
-        String output = "/home/idris-achabou/git/Huffman_dynamique/data/achaabou.huff";
+        String input = "/home/idris-achabou/git/Huffman_dynamique/data/final_fail.txt";
+        String output = "/home/idris-achabou/git/Huffman_dynamique/data/final_fail.huff";
 
         long start = System.currentTimeMillis();
         Compression.compresser(input, output);   // ta méthode existante
