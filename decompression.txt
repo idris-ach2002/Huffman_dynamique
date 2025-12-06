@@ -13,4 +13,16 @@ data/rachaabou.huff;data/achaabou.huff.txt;1383;2060;1.48952;42
 data/rachaabou.huff;data/achaabou.huff.txt;6;34;5.66667;8
 data/rachaabou.huff;data/achaabou.huff.txt;1410;2084;1.47801;45
 data/rachaabou.huff;data/achaabou.huff.txt;6;22;3.66667;11
+
 src/resources/Blaise_Pascal.huff;src/resources/Blaise_Pascal_decompressed.txt;66246;118027;1.78165;132
+./data/rand_500000_5.bin;./data/rand_500000_5_decompressed.txt;2191;3279;1.49658;344
+src/resources/fail1_restricted.bin;src/resources/fail1_restricted_decomp.txt;2191;3279;1.49658;952
+data/test.bin;data/test_decomp.txt;8;7;0.875;142
+data/final_fail.bin;data/test_decomp.txt;1575;2328;1.4781;803
+data/final_fail.bin;data/test_decomp.txt;1575;2328;1.4781;156
+data/final_fail.bin;data/test_decomp.txt;1575;2328;1.4781;165
+data/final_fail.bin;data/test_decomp.txt;1578;2332;1.47782;183
+data/final_fail.bin;data/test_decomp.txt;1579;2332;1.47688;214
+data/final_fail.bin;data/test_decomp.txt;1612;2365;1.46712;220
+data/final_fail.bin;data/test_decomp.txt;1626;2385;1.46679;183
+

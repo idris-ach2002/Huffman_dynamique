@@ -35,7 +35,7 @@ public class ExperimentLauncher {
 
     /** Tailles des fichiers à générer et tester */
     private static final int[] SIZES = new int[]{
-            1000, 10000, 100000, 500000, 1000000, 5000000//, 10000000, 25000000, 50000000, 75000000, 100000000
+            100_000//500_000,//, 10000000, 25000000, 50000000, 75000000, 100000000
             // 1k, 10k , 100k, 500K, 1M, 5M, 10M, 25M, 50M, 75M, 100M 
     };
 
@@ -288,7 +288,10 @@ public class ExperimentLauncher {
      * @param args ignoré ici (utilisé dans la version ProcessBuilder)
      */
     public static void main(String[] args) throws Exception {
-        experimentTextFiles();
-        experimentCodeFiles();
+        while(true){
+            experimentTextFiles();
+            //experimentCodeFiles();
+        }
+
     }
 }

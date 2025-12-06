@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import structure.HuffmanTree;
+import utils.DotGenerator;
 import utils.Fichier;
 import utils.UTF8Reader;
 
@@ -62,8 +63,10 @@ public class Compression {
 				bitBuffer <<= (8 - bitCount);      // on complète avec des 0 à droite
 				writer.write(bitBuffer & 0xFF);
 			}
+
 			writer.flush();
-			AHA.afficherArbre();
+			//AHA.afficherArbre();
+			DotGenerator.gen(AHA.getRoot(), "src/resources/aha.dot");
 
 		} catch(IOException ie) {
 			ie.printStackTrace();
