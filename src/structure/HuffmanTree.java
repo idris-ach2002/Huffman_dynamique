@@ -153,7 +153,8 @@ public class HuffmanTree {
 			try {
 				verifierNYT(root);
 				verifierOccurs(root);
-				 verifierSpecial();
+				verifierSpecial();
+				verifierGdbh();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -195,6 +196,16 @@ public class HuffmanTree {
 
 			verifierNYT(n.left);
 			verifierNYT(n.right);
+		}
+	}
+
+	public void verifierGdbh() throws Exception {
+		SortedSet<Node> ordre = gdbh.tailSet(carSpecial);
+		if(gdbh.size() != ordre.size()) {
+			System.out.println("Problème identifié à l'étape " + compteur + " Lors de l'insertion de CAR = " + currentProcess
+					+ " Etape précédente CAR = " + preProcess
+			);
+			throw new Exception("Gdbh faux y'a un noeud avant NYT dans l'ordre croissant des noeuds");
 		}
 	}
 
