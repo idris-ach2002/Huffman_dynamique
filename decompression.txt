@@ -13,3 +13,4 @@ data/rachaabou.huff;data/achaabou.huff.txt;1383;2060;1.48952;42
 data/rachaabou.huff;data/achaabou.huff.txt;6;34;5.66667;8
 data/rachaabou.huff;data/achaabou.huff.txt;1410;2084;1.47801;45
 data/rachaabou.huff;data/achaabou.huff.txt;6;22;3.66667;11
+src/resources/Blaise_Pascal.huff;src/resources/Blaise_Pascal_decompressed.txt;66246;118027;1.78165;132

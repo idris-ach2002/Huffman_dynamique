@@ -536,7 +536,6 @@ public class HuffmanTree {
 		}
 
 		return res;
-
 	}
 
 	public HashMap<String, Leaf> getCars() {

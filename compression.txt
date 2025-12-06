@@ -15,3 +15,8 @@ data/achaabou.txt;data/rachaabou.huff;22;6;0.27273;10
 data/achaabou.txt;data/rachaabou.huff;2085;1410;0.67626;58
 data/achaabou.txt;data/rachaabou.huff;2085;1410;0.67626;63
 data/achaabou.txt;data/rachaabou.huff;2085;1410;0.67626;68
+src/resources/Blaise_Pascal.txt;src/resources/Blaise_Pascal.huff;118026;66246;0.56128;162
+data/final_fail.txt;data/final_fail.huff;2300;1546;0.67217;56
+data/final_fail.txt;data/final_fail.huff;2300;1546;0.67217;59
+data/final_fail.txt;data/final_fail.huff;2300;1546;0.67217;59
+data/final_fail.txt;data/final_fail.huff;2300;1546;0.67217;55
