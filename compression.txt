@@ -157,3 +157,10 @@ data/final_fail.txt;data/final_fail.bin;2331;1578;0.67696;162
 data/final_fail.txt;data/final_fail.bin;2332;1579;0.6771;244
 data/final_fail.txt;data/final_fail.bin;2365;1612;0.68161;160
 data/final_fail.txt;data/final_fail.bin;2380;1626;0.68319;247
+src/resources/Carambar.txt;data/final_fail.bin;11;9;0.81818;182
+src/resources/Carambar.txt;data/final_fail.bin;11;9;0.81818;62
+src/resources/Carambar.txt;data/final_fail.bin;11;9;0.81818;64
+src/resources/Carambar.txt;data/final_fail.bin;11;9;0.81818;53
+data/final_fail.txt;data/final_fail.bin;0;9;0.0;3
+data/final_fail.txt;data/final_fail.bin;2328;1575;0.67655;140
+data/final_fail.txt;data/final_fail.bin;2328;1575;0.67655;215

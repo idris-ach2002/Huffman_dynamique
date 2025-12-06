@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import structure.HuffmanTree;
+import utils.DotGenerator;
 import utils.Fichier;
 import utils.UTF8Reader;
 
@@ -65,6 +66,7 @@ public class Compression {
 
 			writer.flush();
 			//AHA.afficherArbre();
+			DotGenerator.gen(AHA.getRoot(), "src/resources/aha.dot");
 
 		} catch(IOException ie) {
 			ie.printStackTrace();
