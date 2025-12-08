@@ -16,9 +16,6 @@ import java.util.TreeSet;
 public class HuffmanTree {
 	private Node root;
 	private final Leaf carSpecial = new Leaf(); // C'est le '#'
-	private int compteur;
-	private String currentProcess;
-	private String preProcess;
 
 
 	/**
@@ -41,8 +38,6 @@ public class HuffmanTree {
 		this.root.code = "";
 		this.root.profondeur = 0;
 		gdbh.add(root);
-		compteur = 0;
-		currentProcess = preProcess = null;
 	}
 
 	/**
@@ -52,17 +47,6 @@ public class HuffmanTree {
 	 * @param c caractère qu'on vient de lire
 	 */
 	public void modification(String c) {
-		compteur++;
-		if(currentProcess == null) {
-			currentProcess = c;
-		} else {
-			preProcess = currentProcess;
-			currentProcess = c;
-		}
-		//System.out.println("Rentré dans modification étape " + compteur + " Lors de l'insertion de CAR = " + currentProcess
-					//+ " Etape précédente CAR = " + preProcess
-		//);
-
 		// 1 er Cas si l'arbre est vide
 		if (root == carSpecial) {
 			/*
@@ -150,65 +134,8 @@ public class HuffmanTree {
 
 			// S'assurer de la validité de AHD Après (Insertion | MàJ) d'un caractère
 			traitement(Q, gdbh_q);
-			try {
-				verifierNYT(root);
-				verifierOccurs(root);
-				verifierSpecial();
-				verifierGdbh();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		}
 	}
-
-	public void verifierNYT(Node n) throws Exception{
-		if(n != null) {
-			if(n.profondeur > carSpecial.getProfondeur()) {
-				System.out.println("Problème identifié à l'étape " + compteur + " Lors de l'insertion de CAR = " + currentProcess
-					+ " Etape précédente CAR = " + preProcess
-				);
-				throw new Exception("NYT à droite");
-			}
-
-			verifierNYT(n.left);
-			verifierNYT(n.right);
-		}
-	}
-
-	public void verifierSpecial() throws Exception {
-		if(carSpecial.parent.left != carSpecial) {
-			System.out.println("Problème identifié à l'étape " + compteur + " Lors de l'insertion de CAR = " + currentProcess
-					+ " Etape précédente CAR = " + preProcess
-				);
-				throw new Exception("NYT n'est pas à gauche de son père");
-		}
-	}
-
-
-	public void verifierOccurs(Node n) throws Exception{
-		if(n != null) {
-			if(n.occurence != (n.left.occurence + n.right.occurence)) {
-				System.out.println("Problème identifié à l'étape " + compteur + " Lors de l'insertion de CAR = " + currentProcess
-					+ " Etape précédente CAR = " + preProcess
-				);
-				throw new Exception("Occurence fausse " + n + " gauche " + n.left + " , Droite " + n.right);
-			}
-
-			verifierNYT(n.left);
-			verifierNYT(n.right);
-		}
-	}
-
-	public void verifierGdbh() throws Exception {
-		SortedSet<Node> ordre = gdbh.tailSet(carSpecial);
-		if(gdbh.size() != ordre.size()) {
-			System.out.println("Problème identifié à l'étape " + compteur + " Lors de l'insertion de CAR = " + currentProcess
-					+ " Etape précédente CAR = " + preProcess
-			);
-			throw new Exception("Gdbh faux y'a un noeud avant NYT dans l'ordre croissant des noeuds");
-		}
-	}
-
 
 	public boolean ABR_NYT_CHAR(Node Q) {
 		Node p = Q.getParent();

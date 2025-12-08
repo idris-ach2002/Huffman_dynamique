@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * RandomFileGenerator
@@ -35,20 +36,41 @@ import java.util.Random;
 public class RandomFileGenerator {
 
     /** Alphabet utilisé pour générer les caractères */
-    /* 
-        private static final String ALPHABET =
-            "abcdefghijklmnopqrstuvwxyz" +
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-            "0123456789" +
-            " .,;:!?()[]{}-'\""
-    */
+
     private static final String ALPHABET = buildAsciiAlphabet();
 
     private static String buildAsciiAlphabet() {
-        StringBuilder sb = new StringBuilder();
-        for (char c = 32; c <= 126; c++) { // caractères imprimables standard
-            sb.append(c);
+        int size = 62;
+        char[] cars = new char[size];
+        int index = 0;
+
+        // chiffres 0–9
+        for (char c = '0'; c <= '9'; c++) {
+            cars[index++] = c;
         }
+
+        // A–Z
+        for (char c = 'A'; c <= 'Z'; c++) {
+            cars[index++] = c;
+        }
+
+        // a–z
+        for (char c = 'a'; c <= 'z'; c++) {
+            cars[index++] = c;
+        }
+        var random = ThreadLocalRandom.current();
+        for (int i = size - 1; i > 0; i--) {
+            int j = random.nextInt(i + 1);  // 0..i
+            char tmp = cars[i];
+            cars[i] = cars[j];
+            cars[j] = tmp;
+        }
+
+        StringBuilder sb = new StringBuilder(size);
+        for (int i = 0; i < size; i++) {
+            sb.append(cars[i]);
+        }
+
         return sb.toString();
     }
 

@@ -70,9 +70,7 @@ public class Compression {
 
 		} catch(IOException ie) {
 			ie.printStackTrace();
-		}
-		
-		
+		}		
 	}
 
 	public static void main(String[] args) {
