@@ -29,11 +29,11 @@ public class DotGenerator {
                 GenContext curr = stack.pop();
 
                 if(!(curr.n instanceof HuffmanTree.Leaf)){
-                    bw.write(id + constructLabel(curr.n.getCode(), curr.n.getOccurence(), curr.n.getProfondeur(), null) + nodeAttSuffix + ";\n");
+                    bw.write(id + constructLabel(curr.n.getOccurence(), null) + nodeAttSuffix + ";\n");
                     stack.push(new GenContext(curr.n.getRight(), id));
                     stack.push(new GenContext(curr.n.getLeft(), id));
                 }else{
-                    bw.write(id + constructLabel(curr.n.getCode(), curr.n.getOccurence(), curr.n.getProfondeur(),((HuffmanTree.Leaf) curr.n).getCaractere()) + nodeAttSuffix + ";\n");
+                    bw.write(id + constructLabel(curr.n.getOccurence(),((HuffmanTree.Leaf) curr.n).getCaractere()) + nodeAttSuffix + ";\n");
                 }
                 // si == 0 le curr est la racine
                 if (curr.idParent != 0){
@@ -47,16 +47,12 @@ public class DotGenerator {
         }
 
     }
-    private static String constructLabel(String code, int occ, int prof, String car){
+    private static String constructLabel(int occ, String car){
         if (car == null)
-            return "[label=\" occ = " + occ + "\\n" +
-                    "code = " + code + "\\n" +
-                    "profondeur = " + prof + " \" ";
+            return "[label=\" occ = " + occ + " \" ";
         else
             return "[label=\" occ = " + occ + "\\n" +
-                "code = " + code + "\\n" +
-                "profondeur = " + prof + "\\n \\" +
-                    car + " \" ";
+                     "\\" + car + " \" ";
     }
     /**
      * Représente le contexte local à un noeud, pendant la récursion

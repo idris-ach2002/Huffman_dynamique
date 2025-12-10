@@ -43,7 +43,6 @@ public class Decompression {
                 c = readFromRoot(in, aha.getRoot());
             }
             writer.flush();
-            aha.afficherArbre();
 
         }catch (IOException e) {
             System.out.println(e.getMessage());

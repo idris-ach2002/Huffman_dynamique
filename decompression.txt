@@ -23,3 +23,13 @@ data/final_fail.bin;data/test_decomp.txt;1578;2332;1.47782;183
 data/final_fail.bin;data/test_decomp.txt;1579;2332;1.47688;214
 data/final_fail.bin;data/test_decomp.txt;1612;2365;1.46712;220
 data/final_fail.bin;data/test_decomp.txt;1626;2385;1.46679;183
+data/final_fail.bin;data/test_decomp.txt;1626;2385;1.46679;154
+data/final_fail.bin;data/test_decomp.txt;1626;2385;1.46679;121
+data/final_fail.bin;data/test_decomp.txt;1626;2385;1.46679;118
+data/Carambar.bin;data/test_decomp.txt;9;11;1.22222;8
+data/Carambar.bin;data/test_decomp.txt;0;0;0.0;26
+data/Carambar.bin;data/test_decomp.txt;14;19;1.35714;16
+data/Carambar.bin;data/test_decomp.txt;9;13;1.44444;6
+data/final_fail1.bin;data/test_decomp.txt;1575;2328;1.4781;28
+data/final_fail1.bin;data/test_decomp.txt;1601;2351;1.46846;26
+data/final_fail1.bin;data/test_decomp.txt;3251;4921;1.51369;23

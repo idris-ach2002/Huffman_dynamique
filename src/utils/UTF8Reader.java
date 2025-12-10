@@ -47,23 +47,5 @@ public class UTF8Reader {
         }
         return sb.toString();
     }
-    /*
-        En binaire, ça donne :
-
-        0xE2 → 11100010
-
-        0x82 → 10000010
-
-        0xAC → 10101100
-    */
-    public static void main(String[] args) {
-    int codePoint = 0x20AC; // U+20AC = '€'
-    String bits = toUTF8Bits(codePoint);
-    System.out.println(bits); // attendu : 111000101000001010101100
-}
-
-
-
-
 
 }

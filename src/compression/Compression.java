@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import structure.HuffmanTree;
+//import utils.DotGenerator;
 import utils.DotGenerator;
 import utils.Fichier;
 import utils.UTF8Reader;
@@ -40,10 +41,10 @@ public class Compression {
 				if(feuille == null) {
 					// Transformer le code point (Unicode) d'un caractère à une suite binaire (lisible Base 2)
 					// caractère n'existe pas (Code de la fuille SP | Code UTF8 du car (en binaire)
-					codeBinaire = AHA.getCarSpecial().getCode() + UTF8Reader.toUTF8Bits(codePoint);
+					codeBinaire = HuffmanTree.getCode(AHA.getCarSpecial()) + UTF8Reader.toUTF8Bits(codePoint);
 				}else {
 					// On commence par écrire son code dans l'arbre avant de l'ajouter (pour le décompresseur)
-					codeBinaire = feuille.getCode();
+					codeBinaire = HuffmanTree.getCode(feuille);
 				}
 
 				for (int i = 0; i < codeBinaire.length(); i++) {
@@ -65,7 +66,6 @@ public class Compression {
 			}
 
 			writer.flush();
-			//AHA.afficherArbre();
 			DotGenerator.gen(AHA.getRoot(), "src/resources/aha.dot");
 
 		} catch(IOException ie) {
