@@ -286,38 +286,7 @@ public class HuffmanTree {
      * @param m
      * @param b
      */
-   /* public void permute(Node m, Node b) {
-        assert (b != null);  assert (m != null); 
-
-        Node parentB = b.getParent();
-        Node parentM = m.getParent();
-
-        if (parentB == parentM) {
-
-            if (parentB.getLeft() == m && parentB.getRight() == b) {
-                parentB.setLeft(b);
-                parentB.setRight(m);
-            } else if (parentB.getLeft() == b && parentB.getRight() == m) {
-                parentB.setLeft(m);
-                parentB.setRight(b);
-            }
-        } else {
-
-            if (parentB.getRight() == b) {
-                parentB.setRight(m);
-            } else {
-                parentB.setLeft(m);
-            }
-
-            if (parentM.getRight() == m) {
-                parentM.setRight(b);
-            } else {
-                parentM.setLeft(b);
-            }
-
-        }
-        numAHAsetGDBH(root);
-    }*/
+ 
 
     public void permute(Node m, Node b) {
         if (b == null || m == null || m == root || b == root) {
