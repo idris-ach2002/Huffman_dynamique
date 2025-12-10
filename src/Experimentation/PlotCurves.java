@@ -20,10 +20,13 @@ import java.nio.file.*;
 */
 public class PlotCurves {
 
-    private static final String INPUT_CSV = "out/results_avg.csv";
-    private static final String OUTPUT_PNG = "out/performance_curves_txt.png";
-    private static final String INPUT_CODE_CSV = "out_code/results_avg.csv";
-    private static final String OUTPUT_CODE_PNG = "out_code/performance_curves_code.png";
+           // DATA_DIR += "/" + DATA_DIR + "_txt";
+           // OUT_DIR += "/" + OUT_DIR + "_txt";
+
+    private static final String INPUT_CSV = "out/out_txt/results_avg.csv";
+    private static final String OUTPUT_PNG = "out/out_txt/performance_curves_txt.png";
+    private static final String INPUT_CODE_CSV = "out/out_code/results_avg.csv";
+    private static final String OUTPUT_CODE_PNG = "out/out_code/performance_curves_code.png";
 
     public static void generateCurveTextFiles() throws Exception{
 

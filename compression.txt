@@ -211,3 +211,5 @@ data/final_fail.txt;data/final_fail.bin;0;15;0.0;14
 data/final_fail1.txt;data/final_fail1.bin;2328;1575;0.67655;62
 data/final_fail1.txt;data/final_fail1.bin;2351;1601;0.68099;88
 data/final_fail1.txt;data/final_fail1.bin;4920;3251;0.66077;123
+src/resources/rand_25000000_1.txt;src/resources/rand_25000000_1.bin;25312500;14640666;0.5784;2570
+src/resources/rand_25000000_1.txt;src/resources/rand_25000000_1.bin;25312500;14640666;0.5784;3219

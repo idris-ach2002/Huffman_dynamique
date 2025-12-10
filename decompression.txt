@@ -33,3 +33,5 @@ data/Carambar.bin;data/test_decomp.txt;9;13;1.44444;6
 data/final_fail1.bin;data/test_decomp.txt;1575;2328;1.4781;28
 data/final_fail1.bin;data/test_decomp.txt;1601;2351;1.46846;26
 data/final_fail1.bin;data/test_decomp.txt;3251;4921;1.51369;23
+src/resources/rand_25000000_1.bin;src/resources/rand_25000000_1_decompressed.txt;14640666;25312500;1.72892;1671
+src/resources/rand_25000000_1.bin;src/resources/rand_25000000_1_decompressed.txt;14640666;25312500;1.72892;2108

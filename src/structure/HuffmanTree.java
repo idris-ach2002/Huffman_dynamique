@@ -348,7 +348,7 @@ public class HuffmanTree {
     /**
      * Invariant: le NYT est toujours dans la profondeur maximal
      */
-    /*public int hauteur(){
+    public int hauteur(){
         int h = 0;
         Node curr = carSpecial;
         while(curr != null && curr != root){
@@ -356,17 +356,6 @@ public class HuffmanTree {
             h++;
         }
         return h;
-    }*/
-
-    public int hauteur() {
-        return hauteurRec(root);
-    }
-
-    private int hauteurRec(Node n) {
-        if (n == null) {
-            return -1; // convention : arbre vide = -1, feuille = 0
-        }
-        return 1 + Math.max(hauteurRec(n.getLeft()), hauteurRec(n.getRight()));
     }
 
 

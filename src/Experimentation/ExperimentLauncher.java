@@ -35,7 +35,7 @@ public class ExperimentLauncher {
 
     /** Tailles des fichiers à générer et tester */
     private static final int[] SIZES = new int[]{
-            1000, 10_000, 100_000, 500_000, 1_000_000, 5_000_000, 10_000_000, 25_000_000, 50_000_000, 75_000_000, 100_000_000
+            1000, 10_000, 100_000, 500_000, 1_000_000, 5_000_000//, 10_000_000, 25_000_000, 50_000_000, 75_000_000, 100_000_000
             // 1k, 10k , 100k, 500K, 1M, 5M, 10M, 25M, 50M, 75M, 100M 
     };
 
@@ -43,16 +43,18 @@ public class ExperimentLauncher {
     private static final int FILES_PER_SIZE = 5;
 
     /** Répertoire contenant les données générées */
-    private static final String DATA_DIR = "data";
+    private static String DATA_DIR = "data";
 
     /** Répertoire où les résultats seront enregistrés */
-    private static final String OUT_DIR = "out";
+    private static String OUT_DIR = "out";
 
 
     public static void experimentCodeFiles() throws Exception {
+        DATA_DIR = "data" + "/" + "data" + "_code";
+        OUT_DIR = "out" + "/" + "out" + "_code";
 
-        Files.createDirectories(Paths.get(DATA_DIR+ "_code"));
-        Files.createDirectories(Paths.get(OUT_DIR+ "_code"));
+        Files.createDirectories(Paths.get(DATA_DIR));
+        Files.createDirectories(Paths.get(OUT_DIR));
 
         Path rawCsv = Paths.get(OUT_DIR, "results_raw.csv");
 
@@ -78,50 +80,59 @@ public class ExperimentLauncher {
                     // -----------------------------------------------------------------
                     //   NOUVELLE GÉNÉRATION : JSON / PYTHON / C en alternance
                     // -----------------------------------------------------------------
+                    String format = null;
                     switch (j % 3) {
                         case 0:
-                            input += ".json";
+                            format = ".json";
+                            input += format;
                             CodeGenerator.generateJsonToFile(size / 60, input);
                             break;
 
                         case 1:
-                            input += ".py";
+                            format = ".py";
+                            input += format;
                             CodeGenerator.generatePythonToFile(size / 50, input);
                             break;
 
                         case 2:
-                            input += ".c";
+                            format = ".c";
+                            input += format;
                             CodeGenerator.generateCToFile(size / 45, input);
                             break;
                     }
 
-                    // Fichier compressé
-                    String compressed = input + ".huff";
+                    // Fichiers de sortie
+                    String compressed = Paths.get(DATA_DIR, name+".huff").toString();
 
-                    // -----------------------------------------------------------------
-                    //   COMPRESSION
-                    // -----------------------------------------------------------------
+                    // --------------------------------------------------
+                    //   MESURE TEMPS COMPRESSION
+                    // --------------------------------------------------
 
                     long t0 = System.nanoTime();
                     Compression.compresser(input, compressed);
                     long t1 = System.nanoTime();
+
                     long compressMs = (t1 - t0) / 1_000_000L;
 
-                    // -----------------------------------------------------------------
-                    //   DECOMPRESSION
-                    // -----------------------------------------------------------------
+                    // --------------------------------------------------
+                    //   MESURE TEMPS DÉCOMPRESSION
+                    // --------------------------------------------------
+                    
+                    String file_decomp = Paths.get(DATA_DIR, name+"_decompressed"+format).toString();
                     long t2 = System.nanoTime();
-                    Decompression.decompresser(compressed, input + "_decompressed.txt");
+                    Decompression.decompresser(compressed, file_decomp);
                     long t3 = System.nanoTime();
+
                     long decompressMs = (t3 - t2) / 1_000_000L;
 
 
                     try {
-                        testFiles(input, input + "_decompressed.txt");
+                        testFiles(input, file_decomp);
                     }catch(Exception ie) {
                         ie.printStackTrace();
                     }
                     System.out.println("Décompression checked " + input + " = " + input + "_decompressed.txt");
+
 
                     // -----------------------------------------------------------------
                     //   STATS
@@ -170,6 +181,8 @@ public class ExperimentLauncher {
 
 
     public static void experimentTextFiles() throws Exception {
+        DATA_DIR = "data" + "/" + "data" + "_txt";
+        OUT_DIR = "out" + "/" + "out" + "_txt";
 
         Files.createDirectories(Paths.get(DATA_DIR));
         Files.createDirectories(Paths.get(OUT_DIR));
@@ -209,7 +222,7 @@ public class ExperimentLauncher {
 
 
                     // Fichiers de sortie
-                    String compressed = input.replace("txt", "bin");
+                    String compressed = Paths.get(DATA_DIR, name.replace(".txt", ".huff")).toString();
 
                     // --------------------------------------------------
                     //   MESURE TEMPS COMPRESSION
@@ -224,15 +237,16 @@ public class ExperimentLauncher {
                     // --------------------------------------------------
                     //   MESURE TEMPS DÉCOMPRESSION
                     // --------------------------------------------------
-
+                    
+                    String file_decomp = Paths.get(DATA_DIR, name.replace(".txt", "_decompressed.txt")).toString();
                     long t2 = System.nanoTime();
-                    Decompression.decompresser(compressed,input + "_decompressed.txt" );
+                    Decompression.decompresser(compressed, file_decomp);
                     long t3 = System.nanoTime();
 
                     long decompressMs = (t3 - t2) / 1_000_000L;
 
                     try {
-                        testFiles(input, input + "_decompressed.txt");
+                        testFiles(input, file_decomp);
                     }catch(Exception ie) {
                         ie.printStackTrace();
                     }
@@ -320,6 +334,7 @@ public class ExperimentLauncher {
      * @param args ignoré ici (utilisé dans la version ProcessBuilder)
      */
     public static void main(String[] args) throws Exception {
+        Files.createDirectories(Paths.get(DATA_DIR));
         experimentTextFiles();
         experimentCodeFiles();
     }
