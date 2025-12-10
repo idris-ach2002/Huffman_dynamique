@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * RandomFileGenerator
@@ -57,13 +58,13 @@ public class RandomFileGenerator {
         for (char c = 'a'; c <= 'z'; c++) {
             cars[index++] = c;
         }
-        /*var random = ThreadLocalRandom.current();
+        var random = ThreadLocalRandom.current();
         for (int i = size - 1; i > 0; i--) {
             int j = random.nextInt(i + 1);  // 0..i
             char tmp = cars[i];
             cars[i] = cars[j];
             cars[j] = tmp;
-        }*/
+        }
 
         StringBuilder sb = new StringBuilder(size);
         for (int i = 0; i < size; i++) {

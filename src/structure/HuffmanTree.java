@@ -8,9 +8,9 @@ public class HuffmanTree {
     private final Leaf carSpecial = new Leaf(); // C'est le NYT
     private final HashMap<String, Leaf> cars = new HashMap<>();
     private ArrayList<Node> gdbh = new ArrayList<>();
-    private int nombreNodes;
+   // private int nombreNodes;
 
-    public void numAHAsetGDBH(Node root){
+    /*public void numAHAsetGDBH(Node root){
         // pour faire de l'effet de bord dans parcoursGDBH de la maniere la plus simple
         AtomicInteger rang  = new AtomicInteger(0);
         int h = hauteur(); // profondeur max de l’arbre
@@ -18,7 +18,25 @@ public class HuffmanTree {
         for (int niveau = h; niveau >= 0; niveau--) {
             parcoursNiveauGDDBH(root, niveau, rang);
         }
+
+        
+    }*/
+
+    public void numAHAsetGDBH(Node root){
+        AtomicInteger rang  = new AtomicInteger(0);
+        int h = hauteur(); // profondeur max réelle de l’arbre
+        gdbh.clear();
+
+        for (int niveau = h; niveau >= 0; niveau--) {
+            parcoursNiveauGDDBH(root, niveau, rang);
+        }
+
+        // gdbh contient tous les nœuds, y compris le NYT.
+        // Si tu veux garder la sémantique "nombreNodes = tous les nœuds sauf NYT"
+        // alors on recalcule ici.
+      //  this.nombreNodes = Math.max(0, gdbh.size() - 1);
     }
+
 
     private void parcoursNiveauGDDBH(Node n, int niveau, AtomicInteger i) {
         if (n == null) return;
@@ -33,9 +51,9 @@ public class HuffmanTree {
     }
 
     public HuffmanTree() {
-        nombreNodes = 0;
+        //nombreNodes = 0;
         this.root = this.carSpecial;
-        this.root.setRang(nombreNodes);
+        this.root.setRang(0);
         this.gdbh.add(this.root);
 
     }
@@ -43,8 +61,8 @@ public class HuffmanTree {
     public void modification(String c) {
         // 1 er Cas si l'arbre est vide
         if (root == carSpecial) {
-            root = new Node(); nombreNodes++;
-            Leaf newCar = new Leaf(c); nombreNodes++;
+            root = new Node(); //nombreNodes++;
+            Leaf newCar = new Leaf(c); //nombreNodes++;
             root.setLeft(carSpecial);
             root.setRight(newCar);
             root.setOccurence(1);
@@ -60,8 +78,8 @@ public class HuffmanTree {
             //(Caractère n'est pas présent dans l'arbre)
             if (feuille_c == null) {
                 Q = carSpecial.getParent();
-                Node interne = new Node();nombreNodes++;
-                Leaf newCar = new Leaf(c);nombreNodes++;
+                Node interne = new Node();//nombreNodes++;
+                Leaf newCar = new Leaf(c);//nombreNodes++;
 
                 interne.setLeft(carSpecial);
                 interne.setRight(newCar);
@@ -150,7 +168,7 @@ public class HuffmanTree {
      * mais aussi dans le cas réciproque renvoie le premier noeud qui viole la
      * propièté de chemin incrémentable
      */
-    public Node estIncrementable(List<Node> path) {
+   /*  public Node estIncrementable(List<Node> path) {
 
         for (Node sommet : path) {
             if (sommet != root) {
@@ -160,7 +178,31 @@ public class HuffmanTree {
             }
         }
         return null;
+    }*/
+
+    public Node estIncrementable(List<Node> path) {
+        for (Node sommet : path) {
+            if (sommet == root) continue;
+
+            int succIndex = sommet.getRang() + 1;
+
+            // Ceinture de sécurité : si l'index est hors bornes, on reconstruit gdbh
+            if (succIndex >= gdbh.size()) {
+                numAHAsetGDBH(root);
+                succIndex = sommet.getRang() + 1;
+                if (succIndex >= gdbh.size()) {
+                    // Toujours incohérent : on arrête les échanges
+                    return null;
+                }
+            }
+
+            Node succ = gdbh.get(succIndex);
+            if (sommet.getOccurence() >= succ.getOccurence())
+                return sommet;
+        }
+        return null;
     }
+
 
     /**
      * Cette Méthode incrémente les poids des noeuds dans le chemin [ Xq -> Xm] On
@@ -186,7 +228,7 @@ public class HuffmanTree {
      * @param Q      Le neoud qui viole parcours GDBH
      * @return
      */
-    public Node finBloc(Node Q) {
+    /*public Node finBloc(Node Q) {
         int w = Q.getOccurence();
         for (int i = Q.getRang(); i < nombreNodes; i++) {
             Node curr = gdbh.get(i);
@@ -198,7 +240,43 @@ public class HuffmanTree {
         }
         // pas censé arrivé
         return null;
+    }*/
+
+    public Node finBloc(Node Q) {
+        int w = Q.getOccurence();
+
+        if (gdbh.isEmpty()) {
+            return null;
+        }
+
+        // On s'assure que le rang de départ est dans [0, size-1]
+        int start = Math.min(Math.max(Q.getRang(), 0), gdbh.size() - 1);
+
+        // On va jusqu'à size()-2 car on lit i et i+1
+        for (int i = start; i < gdbh.size() - 1; i++) {
+            Node curr = gdbh.get(i);
+            Node succ = gdbh.get(i + 1);
+
+            // fin de bloc : curr a le bon poids et succ change de poids
+            if (curr.getOccurence() == w && succ.getOccurence() != w) {
+                // Par sécurité on évite de renvoyer la racine
+                if (curr != root) {
+                    return curr;
+                }
+            }
+        }
+
+        // Si on n'a rien trouvé dans la boucle, il est possible que
+        // l'ensemble du bloc se termine sur le dernier nœud du GDBH.
+        Node last = gdbh.get(gdbh.size() - 1);
+        if (last != root && last.getOccurence() == w) {
+            return last;
+        }
+
+        // Cas anormal (incohérence dans l'arbre / les poids)
+        return null;
     }
+
 
 
     /**
@@ -208,8 +286,9 @@ public class HuffmanTree {
      * @param m
      * @param b
      */
-    public void permute(Node m, Node b) {
-        assert (b != null);
+   /* public void permute(Node m, Node b) {
+        assert (b != null);  assert (m != null); 
+
         Node parentB = b.getParent();
         Node parentM = m.getParent();
 
@@ -238,7 +317,47 @@ public class HuffmanTree {
 
         }
         numAHAsetGDBH(root);
+    }*/
+
+    public void permute(Node m, Node b) {
+        if (b == null || m == null || m == root || b == root) {
+            // Rien à faire, arbre déjà cohérent ou état anormal
+            return;
+        }
+
+        Node parentB = b.getParent();
+        Node parentM = m.getParent();
+
+        if (parentB == null || parentM == null) {
+            // par sécurité
+            return;
+        }
+
+        if (parentB == parentM) {
+            if (parentB.getLeft() == m && parentB.getRight() == b) {
+                parentB.setLeft(b);
+                parentB.setRight(m);
+            } else if (parentB.getLeft() == b && parentB.getRight() == m) {
+                parentB.setLeft(m);
+                parentB.setRight(b);
+            }
+        } else {
+            if (parentB.getRight() == b) {
+                parentB.setRight(m);
+            } else {
+                parentB.setLeft(m);
+            }
+
+            if (parentM.getRight() == m) {
+                parentM.setRight(b);
+            } else {
+                parentM.setLeft(b);
+            }
+        }
+
+        numAHAsetGDBH(root);
     }
+
 
     /**
      * Génère le code binaire pour un noeud donné en remontant l'arbre
@@ -260,7 +379,7 @@ public class HuffmanTree {
     /**
      * Invariant: le NYT est toujours dans la profondeur maximal
      */
-    public int hauteur(){
+    /*public int hauteur(){
         int h = 0;
         Node curr = carSpecial;
         while(curr != null && curr != root){
@@ -268,7 +387,19 @@ public class HuffmanTree {
             h++;
         }
         return h;
+    }*/
+
+    public int hauteur() {
+        return hauteurRec(root);
     }
+
+    private int hauteurRec(Node n) {
+        if (n == null) {
+            return -1; // convention : arbre vide = -1, feuille = 0
+        }
+        return 1 + Math.max(hauteurRec(n.getLeft()), hauteurRec(n.getRight()));
+    }
+
 
     public HashMap<String, Leaf> getCars() {
         return cars;

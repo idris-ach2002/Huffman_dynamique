@@ -51,8 +51,8 @@ public class ExperimentLauncher {
 
     public static void experimentCodeFiles() throws Exception {
 
-        Files.createDirectories(Paths.get(DATA_DIR));
-        Files.createDirectories(Paths.get(OUT_DIR));
+        Files.createDirectories(Paths.get(DATA_DIR+ "_code"));
+        Files.createDirectories(Paths.get(OUT_DIR+ "_code"));
 
         Path rawCsv = Paths.get(OUT_DIR, "results_raw.csv");
 
@@ -321,6 +321,6 @@ public class ExperimentLauncher {
      */
     public static void main(String[] args) throws Exception {
         experimentTextFiles();
-        //experimentCodeFiles();
+        experimentCodeFiles();
     }
 }
