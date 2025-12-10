@@ -5,6 +5,8 @@ import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.chart.axis.NumberAxis;
+
 
 import java.io.*;
 import java.nio.file.*;
@@ -54,6 +56,28 @@ public class PlotCurves {
                 "Temps (ms)",
                 dataset
         );
+
+        NumberAxis xAxis = (NumberAxis) chart.getXYPlot().getDomainAxis();
+
+        xAxis.setNumberFormatOverride(new java.text.NumberFormat() {
+            @Override
+            public StringBuffer format(double value, StringBuffer buffer, java.text.FieldPosition pos) {
+                if (value >= 1_000_000_000) return buffer.append(String.format("%.1f Go", value / 1_000_000_000));
+                if (value >= 1_000_000)     return buffer.append(String.format("%.1f Mo", value / 1_000_000));
+                if (value >= 1_000)         return buffer.append(String.format("%.1f Ko", value / 1_000));
+                return buffer.append((long)value + " o");
+            }
+
+            @Override
+            public StringBuffer format(long value, StringBuffer buffer, java.text.FieldPosition pos) {
+                return format((double) value, buffer, pos);
+            }
+
+            @Override
+            public Number parse(String source, java.text.ParsePosition parsePosition) {
+                return null; // Pas utile ici
+            }
+        });
 
         // Sauvegarde en PNG
         ChartUtils.saveChartAsPNG(new File(OUTPUT_PNG), chart, 900, 600);
