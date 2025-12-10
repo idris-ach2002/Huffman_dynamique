@@ -209,7 +209,7 @@ public class HuffmanTree {
      * @param b
      */
     public void permute(Node m, Node b) {
-        assert (b != null);
+        //assert (b != null);
         Node parentB = b.getParent();
         Node parentM = m.getParent();
 
