@@ -35,7 +35,7 @@ public class ExperimentLauncher {
 
     /** Tailles des fichiers à générer et tester */
     private static final int[] SIZES = new int[]{
-            100_000//500_000,//, 10000000, 25000000, 50000000, 75000000, 100000000
+            1000, 10_000, 100_000, 500_000, 1_000_000, 5_000_000, 10_000_000, 25_000_000, 50_000_000, 75_000_000, 100_000_000
             // 1k, 10k , 100k, 500K, 1M, 5M, 10M, 25M, 50M, 75M, 100M 
     };
 
@@ -114,6 +114,14 @@ public class ExperimentLauncher {
                     Decompression.decompresser(compressed, input + "_decompressed.txt");
                     long t3 = System.nanoTime();
                     long decompressMs = (t3 - t2) / 1_000_000L;
+
+
+                    try {
+                        testFiles(input, input + "_decompressed.txt");
+                    }catch(Exception ie) {
+                        ie.printStackTrace();
+                    }
+                    System.out.println("Décompression checked " + input + " = " + input + "_decompressed.txt");
 
                     // -----------------------------------------------------------------
                     //   STATS
@@ -223,6 +231,13 @@ public class ExperimentLauncher {
 
                     long decompressMs = (t3 - t2) / 1_000_000L;
 
+                    try {
+                        testFiles(input, input + "_decompressed.txt");
+                    }catch(Exception ie) {
+                        ie.printStackTrace();
+                    }
+                    System.out.println("Décompression checked " + input + " = " + input + "_decompressed.txt");
+
                     // --------------------------------------------------
                     //   STATISTIQUES FICHIER
                     // --------------------------------------------------
@@ -271,6 +286,23 @@ public class ExperimentLauncher {
     }
 
 
+    public static void testFiles(String file1, String file2) throws Exception{
+        try(BufferedReader reader1 = new BufferedReader(new FileReader(file1), 65_536);
+            BufferedReader reader2 = new BufferedReader(new FileReader(file2), 65_536);) {
+                String ligne_file1 = null, ligne_file2 = null;
+                while(true) {
+                    ligne_file1 = reader1.readLine();
+                    ligne_file2 = reader2.readLine();
+                    if(ligne_file1 == null || ligne_file2 == null) break;
+                    if(!ligne_file1.equals(ligne_file2)) throw new Exception("File " + file1 + " doesn't match File " + file2 + " Problem spotted [ "+
+                        ligne_file1 + " != " + ligne_file2 + " ]");
+                }
+        } catch(IOException ie) {
+            ie.printStackTrace();
+        }
+    }
+
+
     /**
      * Point d’entrée du programme.
      *
@@ -288,10 +320,7 @@ public class ExperimentLauncher {
      * @param args ignoré ici (utilisé dans la version ProcessBuilder)
      */
     public static void main(String[] args) throws Exception {
-        while(true){
-            experimentTextFiles();
-            //experimentCodeFiles();
-        }
-
+        experimentTextFiles();
+        //experimentCodeFiles();
     }
 }

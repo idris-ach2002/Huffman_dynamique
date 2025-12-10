@@ -1,6 +1,5 @@
 package structure;
 
-
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -367,5 +366,4 @@ public class HuffmanTree {
             return caractere;
         }
     }
-
 }

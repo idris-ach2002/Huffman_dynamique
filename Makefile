@@ -10,7 +10,7 @@ SRC_CORE := $(filter-out $(SRC_DIR)/Experimentation/%, $(SRC_ALL))
 # Seulement les fichiers d'expérimentation
 SRC_EXP  := $(filter $(SRC_DIR)/Experimentation/%, $(SRC_ALL))
 
-JARS = lib/jfreechart-1.5.4.jar;lib/jcommon-1.0.24.jar
+JARS = lib/jfreechart-1.5.4.jar:lib/jcommon-1.0.24.jar
 
 all: compile
 
@@ -29,12 +29,12 @@ exec_decomp:
 compile_exp:
 	@echo ">> Compilation des fichiers Experimentation..."
 	@mkdir -p $(BIN)
-	@$(JAVAC) -cp "$(BIN);$(JARS)" -d $(BIN) $(SRC_EXP)
+	@$(JAVAC) -cp "$(BIN):$(JARS)" -d $(BIN) $(SRC_EXP)
 	@echo ">> Compilation Experimentation terminée."
 
 plot: compile compile_exp
 	@echo ">> Génération des courbes..."
-	@$(JAVA) -cp "$(BIN);$(JARS)" Experimentation.PlotCurves
+	@$(JAVA) -cp "$(BIN):$(JARS)" Experimentation.PlotCurves
 
 clean:
 	@rm -rf $(BIN)/*
