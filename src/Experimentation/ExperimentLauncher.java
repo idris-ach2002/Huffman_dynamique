@@ -192,7 +192,7 @@ public class ExperimentLauncher {
         try (BufferedWriter rawWriter = Files.newBufferedWriter(rawCsv)) {
 
             // En-tête du CSV des résultats bruts
-            rawWriter.write("input,compressed,input_bytes,compressed_bytes,compress_ms,decompress_ms,ok\n");
+            rawWriter.write("input,compressed,input_bytes,compressed_bytes,compress_ms,decompress_ms\n");
 
             // ----------------------------------------------------------
             //   BOUCLE PRINCIPALE : ON TESTE CHAQUE TAILLE DE FICHIER
