@@ -6,14 +6,24 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Stack;
-
+/**
+ * Classe utilitaire pour la génération de graphiques représentant l'arbre de Huffman.
+ * <p>
+ * Cette classe génère un fichier au format DOT (compatible avec le logiciel Graphviz)
+ * permettant de visualiser la structure de l'arbre, les occurrences et les caractères
+ * des feuilles.
+ * </p>
+ */
 public class DotGenerator {
 
     public static final String nodeAttSuffix = " shape=\"square\" style=\"filled\" width=0.2 height=0.2]";
+
     /**
-     * génère un fichier dst.dot représentant l'AHA enraciné en root
-     * @param root
-     * @param dst
+     * Génère un fichier .dot représentant l'Arbre de Huffman enraciné au nœud spécifié.
+     *
+     * @param root La racine de l'arbre de Huffman (ou du sous-arbre) à visualiser.
+     * @param dst  Le chemin ou le nom du fichier de destination (ex: "arbre.dot").
+     * @throws RuntimeException Si une erreur d'entrée/sortie (IOException) survient lors de l'écriture du fichier.
      */
     public static void gen(HuffmanTree.Node root, String dst){
 
@@ -57,7 +67,7 @@ public class DotGenerator {
     /**
      * Représente le contexte local à un noeud, pendant la récursion
      */
-    static class GenContext {
+    private static class GenContext {
         HuffmanTree.Node n;
         int idParent;
 

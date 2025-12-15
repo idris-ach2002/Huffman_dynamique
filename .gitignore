@@ -1,5 +1,6 @@
 *.iml
-
+compression.txt
+decompression.txt
 
 ### Ressouces Volumineuses du projet
 src/resources/*.bin

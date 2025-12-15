@@ -154,30 +154,6 @@ public class HuffmanTree {
         return null;
     }
 
-//    public Node estIncrementable(List<Node> path) {
-//        for (Node sommet : path) {
-//            if (sommet == root) continue;
-//
-//            int succIndex = sommet.getRang() + 1;
-//
-//            // Ceinture de sécurité : si l'index est hors bornes, on reconstruit gdbh
-//            if (succIndex >= gdbh.size()) {
-//                numAHAsetGDBH(root);
-//                succIndex = sommet.getRang() + 1;
-//                if (succIndex >= gdbh.size()) {
-//                    // Toujours incohérent : on arrête les échanges
-//                    return null;
-//                }
-//            }
-//
-//            Node succ = gdbh.get(succIndex);
-//            if (sommet.getOccurence() >= succ.getOccurence())
-//                return sommet;
-//        }
-//        return null;
-//    }
-
-
     /**
      * Cette Méthode incrémente les poids des noeuds dans le chemin [ Xq -> Xm] On
      * commence d'abord par construire cette plage
