@@ -11,8 +11,8 @@ public class Main {
 //        String input = args[0];
 //        String output = args[1];
 
-        String input = "./src/resources/Blaise_Pascal.txt";
-        String output= "./src/resources/Blaise_Pascal_decomp.txt";
+        String input = "src/resources/Blaise_Pascal.txt.huff";
+        String output= "src/resources/Blaise_Pascal_Dec.txt";
 
         long start = System.currentTimeMillis();
         Decompression.decompresser(input, output);

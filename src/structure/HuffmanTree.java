@@ -39,7 +39,6 @@ public class HuffmanTree {
     }
 
     public void modification(String c) {
-        //assert (this.gdbh.get(0) == carSpecial && this.gdbh.getLast() == root);
         // 1 er Cas si l'arbre est vide
         if (root == carSpecial) {
             root = new Node(); //nombreNodes++;
@@ -48,7 +47,6 @@ public class HuffmanTree {
             root.setRight(newCar);
             root.occurence = 1;
 
-            // gdbh à jour et Aha aussi
             this.numAHAsetGDBH(root);
 
             cars.put(c, newCar);
@@ -67,8 +65,6 @@ public class HuffmanTree {
                 interne.occurence = 1;
 
                 Q.setLeft(interne);
-
-                // gdbh à jour et Aha aussi
                 numAHAsetGDBH(root);
 
                 cars.put(c, newCar);
@@ -85,19 +81,23 @@ public class HuffmanTree {
         }
     }
 
+    /**
+     * Indique si {@code Q} est la feuille symbole directement associée au NYT au sein du même parent.
+     *
+     * @param Q nœud à tester
+     * @return {@code true} si {@code Q} est le frère droit de NYT sous le même parent, sinon {@code false}
+     */
     public boolean ABR_NYT_CHAR(Node Q) {
         Node p = Q.parent;
         if (p == null)
             return false;
         return p.left == carSpecial && p.right == Q;
     }
-
     /**
-     * Cette méthode permet de mettre à jour les occurences (Poids) des noeuds de Q
-     * jusqu'à la racine tout on veillant sur la correction et la validité de l'AHD
-     * obtenu
+     * Met à jour l’arbre depuis un nœud {@code Q} jusqu’à la racine.
+     * En préservant à travers les permutation si necessaire les invariants du AHA
      *
-     * @param Q
+     * @param Q nœud de départ (feuille du symbole courant ou nœud interne selon le cas)
      */
     public void traitement(Node Q) {
 
@@ -137,13 +137,10 @@ public class HuffmanTree {
     }
 
     /**
-     * soit Q le premier sommet de Γφ qui ne vérifie pas P, et soit b tel que
-     * pds(xq) = pds(xq+1) = . . . = pds(xb) et pds(xb) < pds(xb+1) (b est en fin de
-     * bloc de Q ) b => c'est le premier Noeud qui vérifie le parcours GDBH en ordre
-     * ( < )
+     * Retourne la fin du bloc de poids du nœud {@code Q} dans l’ordre {@link #gdbh}.
      *
-     * @param Q      Le neoud qui viole parcours GDBH
-     * @return
+     * @param Q nœud dont on veut déterminer la fin de bloc
+     * @return le dernier nœud du bloc de poids {@code Q.occurence}, ou {@code null} si non trouvé
      */
     public Node finBloc(Node Q) {
         int w = Q.occurence;
@@ -158,13 +155,6 @@ public class HuffmanTree {
         return null;
     }
 
-    /**
-     * @pre n1 et n2 existent dans l'arbre !!! modofie les éléments de Set l'ABR
-     *      devient incoherent ! Peut etre utilier les seter right et left c'est
-     *      mieux
-     * @param m
-     * @param b
-     */
     public void permute(Node m, Node b) {
         if (b == null || m == null || m == root || b == root) {
             return;
@@ -199,8 +189,14 @@ public class HuffmanTree {
     }
 
 
+
     /**
-     * Génère le code binaire pour un noeud donné en remontant l'arbre
+     * Construit le code binaire d’un nœud en remontant jusqu’à la racine.
+     *
+     * <p> gauche = {@code 0}, droite = {@code 1}.</p>
+     *
+     * @param n nœud dont on veut le code
+     * @return chaîne de bits représentant le chemin racine → nœud
      */
     public static String getCode(Node n) {
         StringBuilder sb = new StringBuilder();
@@ -216,9 +212,6 @@ public class HuffmanTree {
         return sb.reverse().toString();
     }
 
-    /**
-     * Invariant: le NYT est toujours dans la profondeur maximal
-     */
     public int hauteur(){
         int h = 0;
         Node curr = carSpecial;
@@ -228,7 +221,6 @@ public class HuffmanTree {
         }
         return h;
     }
-
 
     public HashMap<String, Leaf> getCars() {
         return cars;
