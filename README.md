@@ -68,8 +68,15 @@ Via le script :
 ```bash
 ./compresser fichier.txt fichier_compresse.huff
 ```
-Qui écrit les ajoute pour chaque compression les informations suivante: 
-Dans ./compression.txt
+
+Qui écrit et ajoute pour chaque compression, dans le fichier ./compression.txt, les informations suivantes :
+- le nom du fichier d’entrée (texte original).
+- le nom du fichier de sortie (fichier compressé).
+- le nombre d’octets du fichier d’entrée.
+- le nombre d’octets du fichier de sortie.
+- le taux de compression.
+- le temps de compression en millisecondes.
+
 
 ### Décompression
 Via le script :
@@ -77,8 +84,7 @@ Via le script :
 ./decompresser fichier_compresse.huff fichier.txt
 ```
 
-Qui écrit les ajoute pour chaque compression les informations suivante:
-Dans ./decompression.txt
+Qui écrit les ajoute pour chaque décompression, dans le fichier ./decompression.txt les informations analogues à celles citées.
 
 ---
 ## Utils (I/O, debug, visualisation)
