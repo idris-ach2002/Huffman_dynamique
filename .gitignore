@@ -2,6 +2,8 @@
 compression.txt
 decompression.txt
 
+data/
+
 ### Ressouces Volumineuses du projet
 src/resources/*.bin
 resources/*.txt

@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class HuffmanTree {
     private Node root;
     private final Leaf carSpecial = new Leaf(); // C'est le NYT
-    private final HashMap<String, Leaf> cars = new HashMap<>();
+    private HashMap<String, Leaf> cars = new HashMap<>();
     private ArrayList<Node> gdbh = new ArrayList<>();
 
     public void numAHAsetGDBH(Node root){
@@ -17,8 +17,6 @@ public class HuffmanTree {
         for (int niveau = h; niveau >= 0; niveau--) {
             parcoursNiveauGDDBH(root, niveau, rang);
         }
-
-        
     }
 
     private void parcoursNiveauGDDBH(Node n, int niveau, AtomicInteger i) {
@@ -102,71 +100,39 @@ public class HuffmanTree {
      */
     public void traitement(Node Q) {
 
-        List<Node> cheminRacine = directPath(Q);
-        Node m = estIncrementable(cheminRacine);
-
-        if (m == null) {
-            for (Node noeud : cheminRacine) {
-                noeud.setOccurence(noeud.getOccurence() + 1);
+        while (Q != null) {
+            Node m = nodeTobeIncr(Q);
+            if (m == null) {
+                // Tout le chemin [Q -> racine] a été incrémenté
+                return;
             }
-        } else {
-            // le cheminRacine n'est pas incémentable
             Node b = finBloc(m);
-            incrementerChemin(Q, m);
+            // important: incrémenter après finbloc pour pas fausser le calcul
+            m.setOccurence(m.getOccurence() + 1);
             permute(m, b);
-            traitement(m.getParent());
+            Q = m.getParent();
         }
-
     }
 
     /**
-     * Cette méthode permet de visiter Q jusqu ’à la racine ΓQ = [Q, Qi1, ..., Qik]
-     * x_i0 , ..., x_ik = les num des noeuds de Gamma_Q
+     * Rend le premier noeud qui ne verifie pas l'incrementabilité (m)
+     * et incremente sur son chemin tout les descendants strict de m
+     * @param Q
+     * @return le premier noeud qui ne vérifie pas la condition d'incrémentabilité
      */
-    public List<Node> directPath(Node Q) {
-        List<Node> gamma = new ArrayList<>();
-
+    private Node nodeTobeIncr(Node Q) {
         Node cur = Q;
         while (cur != null) {
-            gamma.add(cur);
+            if (cur != root) {
+                Node succ = this.gdbh.get(cur.rang + 1);
+                if (cur.getOccurence() >= succ.getOccurence()) {
+                    return cur;
+                }
+            }
+            cur.setOccurence(cur.getOccurence() + 1);
             cur = cur.getParent();
         }
-
-        return gamma;
-    }
-
-    /**
-     * Cette Méthode fait deux tâche à la fois d'une part elle permet de savoir si
-     * un chemin est incrémentable (null est renvoyé)
-     *
-     * mais aussi dans le cas réciproque renvoie le premier noeud qui viole la
-     * propièté de chemin incrémentable
-     */
-   public Node estIncrementable(List<Node> path) {
-
-        for (Node sommet : path) {
-            if (sommet != root) {
-                Node succ = this.gdbh.get(sommet.getRang() + 1);
-                if (sommet.getOccurence() >= succ.getOccurence())
-                    return sommet;
-            }
-        }
         return null;
-    }
-
-    /**
-     * Cette Méthode incrémente les poids des noeuds dans le chemin [ Xq -> Xm] On
-     * commence d'abord par construire cette plage
-     */
-    public void incrementerChemin(Node Q, Node m) {
-        Node curr = Q;
-        while (curr != m){
-            curr.setOccurence(curr.getOccurence() + 1);
-            curr = curr.getParent();
-        }
-        //
-        curr.setOccurence(curr.getOccurence() + 1);
-
     }
 
     /**
@@ -198,7 +164,7 @@ public class HuffmanTree {
      * @param m
      * @param b
      */
- 
+
 
     public void permute(Node m, Node b) {
         if (b == null || m == null || m == root || b == root) {
