@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class HuffmanTree {
     private Node root;
     private final Leaf carSpecial = new Leaf(); // C'est le NYT
-    private final HashMap<String, Leaf> cars = new HashMap<>();
+    private HashMap<String, Leaf> cars = new HashMap<>();
     private ArrayList<Node> gdbh = new ArrayList<>();
 
     public void numAHAsetGDBH(Node root){
@@ -17,8 +17,6 @@ public class HuffmanTree {
         for (int niveau = h; niveau >= 0; niveau--) {
             parcoursNiveauGDDBH(root, niveau, rang);
         }
-
-        
     }
 
     private void parcoursNiveauGDDBH(Node n, int niveau, AtomicInteger i) {
@@ -28,14 +26,14 @@ public class HuffmanTree {
             n.rang = i.getAndIncrement();
             gdbh.add(n);
         } else {
-            parcoursNiveauGDDBH(n.getLeft(), niveau - 1, i);
-            parcoursNiveauGDDBH(n.getRight(), niveau - 1, i);
+            parcoursNiveauGDDBH(n.left, niveau - 1, i);
+            parcoursNiveauGDDBH(n.right, niveau - 1, i);
         }
     }
 
     public HuffmanTree() {
         this.root = this.carSpecial;
-        this.root.setRang(0);
+        this.root.rang = 0;
         this.gdbh.add(this.root);
 
     }
@@ -47,9 +45,8 @@ public class HuffmanTree {
             Leaf newCar = new Leaf(c); //nombreNodes++;
             root.setLeft(carSpecial);
             root.setRight(newCar);
-            root.setOccurence(1);
+            root.occurence = 1;
 
-            // gdbh à jour et Aha aussi
             this.numAHAsetGDBH(root);
 
             cars.put(c, newCar);
@@ -59,17 +56,15 @@ public class HuffmanTree {
 
             //(Caractère n'est pas présent dans l'arbre)
             if (feuille_c == null) {
-                Q = carSpecial.getParent();
+                Q = carSpecial.parent;
                 Node interne = new Node();
                 Leaf newCar = new Leaf(c);
 
                 interne.setLeft(carSpecial);
                 interne.setRight(newCar);
-                interne.setOccurence(1);
+                interne.occurence = 1;
 
                 Q.setLeft(interne);
-
-                // gdbh à jour et Aha aussi
                 numAHAsetGDBH(root);
 
                 cars.put(c, newCar);
@@ -77,154 +72,114 @@ public class HuffmanTree {
             } else {
                 Q = feuille_c;
 
-                if (ABR_NYT_CHAR(Q) && Q.getParent() == finBloc(Q)) {
-                    Q.setOccurence(Q.getOccurence() + 1);
-                    Q = Q.getParent();
+                if (ABR_NYT_CHAR(Q) && Q.parent == finBloc(Q)) {
+                    Q.occurence = Q.occurence + 1;
+                    Q = Q.parent;
                 }
             }
             traitement(Q);
         }
     }
 
+    /**
+     * Indique si {@code Q} est la feuille symbole directement associée au NYT au sein du même parent.
+     *
+     * @param Q nœud à tester
+     * @return {@code true} si {@code Q} est le frère droit de NYT sous le même parent, sinon {@code false}
+     */
     public boolean ABR_NYT_CHAR(Node Q) {
-        Node p = Q.getParent();
+        Node p = Q.parent;
         if (p == null)
             return false;
-        return p.getLeft() == carSpecial && p.getRight() == Q;
+        return p.left == carSpecial && p.right == Q;
     }
-
     /**
-     * Cette méthode permet de mettre à jour les occurences (Poids) des noeuds de Q
-     * jusqu'à la racine tout on veillant sur la correction et la validité de l'AHD
-     * obtenu
+     * Met à jour l’arbre depuis un nœud {@code Q} jusqu’à la racine.
+     * En préservant à travers les permutation si necessaire les invariants du AHA
      *
-     * @param Q
+     * @param Q nœud de départ (feuille du symbole courant ou nœud interne selon le cas)
      */
     public void traitement(Node Q) {
 
-        List<Node> cheminRacine = directPath(Q);
-        Node m = estIncrementable(cheminRacine);
-
-        if (m == null) {
-            for (Node noeud : cheminRacine) {
-                noeud.setOccurence(noeud.getOccurence() + 1);
+        while (Q != null) {
+            Node m = nodeTobeIncr(Q);
+            if (m == null) {
+                // Tout le chemin [Q -> racine] a été incrémenté
+                return;
             }
-        } else {
-            // le cheminRacine n'est pas incémentable
             Node b = finBloc(m);
-            incrementerChemin(Q, m);
+            // important: incrémenter après finbloc pour pas fausser le calcul
+            m.occurence = m.occurence + 1;
             permute(m, b);
-            traitement(m.getParent());
+            Q = m.parent;
         }
-
     }
 
     /**
-     * Cette méthode permet de visiter Q jusqu ’à la racine ΓQ = [Q, Qi1, ..., Qik]
-     * x_i0 , ..., x_ik = les num des noeuds de Gamma_Q
+     * Rend le premier noeud qui ne verifie pas l'incrementabilité (m)
+     * et incremente sur son chemin tout les descendants strict de m
+     * @param Q
+     * @return le premier noeud qui ne vérifie pas la condition d'incrémentabilité
      */
-    public List<Node> directPath(Node Q) {
-        List<Node> gamma = new ArrayList<>();
-
+    private Node nodeTobeIncr(Node Q) {
         Node cur = Q;
         while (cur != null) {
-            gamma.add(cur);
-            cur = cur.getParent();
-        }
-
-        return gamma;
-    }
-
-    /**
-     * Cette Méthode fait deux tâche à la fois d'une part elle permet de savoir si
-     * un chemin est incrémentable (null est renvoyé)
-     *
-     * mais aussi dans le cas réciproque renvoie le premier noeud qui viole la
-     * propièté de chemin incrémentable
-     */
-   public Node estIncrementable(List<Node> path) {
-
-        for (Node sommet : path) {
-            if (sommet != root) {
-                Node succ = this.gdbh.get(sommet.getRang() + 1);
-                if (sommet.getOccurence() >= succ.getOccurence())
-                    return sommet;
+            if (cur != root) {
+                Node succ = this.gdbh.get(cur.rang + 1);
+                if (cur.occurence >= succ.occurence) {
+                    return cur;
+                }
             }
+            cur.occurence = cur.occurence + 1;
+            cur = cur.parent;
         }
         return null;
     }
 
 
     /**
-     * Cette Méthode incrémente les poids des noeuds dans le chemin [ Xq -> Xm] On
-     * commence d'abord par construire cette plage
-     */
-    public void incrementerChemin(Node Q, Node m) {
-        Node curr = Q;
-        while (curr != m){
-            curr.setOccurence(curr.getOccurence() + 1);
-            curr = curr.getParent();
-        }
-        //
-        curr.setOccurence(curr.getOccurence() + 1);
-
-    }
-
-    /**
-     * soit Q le premier sommet de Γφ qui ne vérifie pas P, et soit b tel que
-     * pds(xq) = pds(xq+1) = . . . = pds(xb) et pds(xb) < pds(xb+1) (b est en fin de
-     * bloc de Q ) b => c'est le premier Noeud qui vérifie le parcours GDBH en ordre
-     * ( < )
+     * Retourne la fin du bloc de poids du nœud {@code Q} dans l’ordre {@link #gdbh}.
      *
-     * @param Q      Le neoud qui viole parcours GDBH
-     * @return
+     * @param Q nœud dont on veut déterminer la fin de bloc
+     * @return le dernier nœud du bloc de poids {@code Q.occurence}, ou {@code null} si non trouvé
      */
     public Node finBloc(Node Q) {
-        int w = Q.getOccurence();
-        for (int i = Q.getRang(); i < gdbh.size() - 1; i++) {
+        int w = Q.occurence;
+        for (int i = Q.rang; i < gdbh.size() - 1; i++) {
             Node curr = gdbh.get(i);
             Node succ = gdbh.get(i + 1);
             // on reste dans le bloc tant que le poids == w
-            if (curr.getOccurence() == w && succ.getOccurence() != w) {
+            if (curr.occurence == w && succ.occurence != w) {
                 return curr; // fin du bloc de poids w
             }
         }
         return null;
     }
 
-    /**
-     * @pre n1 et n2 existent dans l'arbre !!! modofie les éléments de Set l'ABR
-     *      devient incoherent ! Peut etre utilier les seter right et left c'est
-     *      mieux
-     * @param m
-     * @param b
-     */
- 
-
     public void permute(Node m, Node b) {
         if (b == null || m == null || m == root || b == root) {
             return;
         }
 
-        Node parentB = b.getParent();
-        Node parentM = m.getParent();
+        Node parentB = b.parent;
+        Node parentM = m.parent;
 
         if (parentB == parentM) {
-            if (parentB.getLeft() == m && parentB.getRight() == b) {
+            if (parentB.left == m && parentB.right == b) {
                 parentB.setLeft(b);
                 parentB.setRight(m);
-            } else if (parentB.getLeft() == b && parentB.getRight() == m) {
+            } else if (parentB.left == b && parentB.right == m) {
                 parentB.setLeft(m);
                 parentB.setRight(b);
             }
         } else {
-            if (parentB.getRight() == b) {
+            if (parentB.right == b) {
                 parentB.setRight(m);
             } else {
                 parentB.setLeft(m);
             }
 
-            if (parentM.getRight() == m) {
+            if (parentM.right == m) {
                 parentM.setRight(b);
             } else {
                 parentM.setLeft(b);
@@ -235,8 +190,14 @@ public class HuffmanTree {
     }
 
 
+
     /**
-     * Génère le code binaire pour un noeud donné en remontant l'arbre
+     * Construit le code binaire d’un nœud en remontant jusqu’à la racine.
+     *
+     * <p> gauche = {@code 0}, droite = {@code 1}.</p>
+     *
+     * @param n nœud dont on veut le code
+     * @return chaîne de bits représentant le chemin racine → nœud
      */
     public static String getCode(Node n) {
         StringBuilder sb = new StringBuilder();
@@ -252,9 +213,6 @@ public class HuffmanTree {
         return sb.reverse().toString();
     }
 
-    /**
-     * Invariant: le NYT est toujours dans la profondeur maximal
-     */
     public int hauteur(){
         int h = 0;
         Node curr = carSpecial;
@@ -264,7 +222,6 @@ public class HuffmanTree {
         }
         return h;
     }
-
 
     public HashMap<String, Leaf> getCars() {
         return cars;
@@ -310,38 +267,22 @@ public class HuffmanTree {
             return "Node : " + this.toStr();
         }
 
-        public Node getLeft() {
-            return left;
+        public int getOccurence() {
+            return occurence;
         }
 
         public Node getRight() {
             return right;
         }
 
-        public Node getParent() {
-            return parent;
-        }
-
-        public int getOccurence() {
-            return occurence;
-        }
-
-        public void setOccurence(int occurence) {
-            this.occurence = occurence;
-        }
-
-        public void setRang(int rang) {
-            this.rang = rang;
-        }
-
-        public int getRang() {
-            return rang;
+        public Node getLeft() {
+            return left;
         }
     }
 
     public class Leaf extends Node {
 
-        private String caractere;
+        private final String caractere;
 
         public Leaf(String c) {
             this.caractere = c;

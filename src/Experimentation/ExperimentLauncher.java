@@ -35,8 +35,21 @@ public class ExperimentLauncher {
 
     /** Tailles des fichiers à générer et tester */
     private static final int[] SIZES = new int[]{
+<<<<<<< HEAD
             10_000_000, 20_000_000, 30_000_000, 40_000_000, 50_000_000,60_000_000, 70_000_000 , 80_000_000, 90_000_000, 100_000_000
             // 1k, 10k , 100k, 500K, 1M, 5M, 10M, 25M, 50M, 75M, 100M 
+=======
+            100_000,
+            200_000,
+            300_000,
+            400_000,
+            500_000,
+            600_000,
+            700_000,
+            800_000,
+            900_000,
+            1_000_000
+>>>>>>> 83bb4c24719c283d660f42936a03acd8085a089c
     };
 
     /** Nombre de fichiers générés par taille */

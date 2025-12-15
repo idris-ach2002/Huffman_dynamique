@@ -7,7 +7,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 
-
+/**
+ * Contient les fonctions {lecture} et {ecriture} comme demandé dans les questions 3 et 4 de l'énoncé
+ */
 public class Fichier {
 
     /**
@@ -82,14 +84,11 @@ public class Fichier {
         }
     }
 
-    /**
-
-     */
 
     /**
      * Une fonction pour écrire les informations sur les fichiers d'entrées et de soties dans
      * compression.txt et dans decompression.txt
-     * @param in fichier soit à compressé soit à décompressé
+     * @param in fichier soit à compresser soit à décompresser
      * @param out fichier compressé ou bien décompressé
      * @param time temps de compression/ decompression
      * @param dst compression.txt ou bien decompression.txt

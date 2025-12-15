@@ -8,14 +8,16 @@ import utils.UTF8Decoder;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
-/**
- * Fournit une procédure de décompression d'un fichier compressé.
- * <br>
- * NB: La décompression fournit n'est pas égale exactement au texte d'origine, elle contient des caractères
- * en plus par rapport à l'original, à cause des bits de padding ajouté par le système de fichier qui taravail
- * avec des blocs d'octets, alors que pour avoir la décompression parfaite il faut connaitre le nombre de bits exacte
- */
 public class Decompression {
+
+
+    /**
+     * Décompresse un fichier binaire produit par la compression Huffman adaptatif et écrit le texte reconstruit en UTF-8.
+     * La décompression peut produit un surplus de caractères à cause du padding rajouté à la compression
+     *
+     * @param huffCompFile chemin du fichier compressé (binaire)
+     * @param dst chemin du fichier de sortie (texte UTF-8)
+     */
 
     public static void decompresser(String huffCompFile, String dst){
         HuffmanTree aha = new HuffmanTree();
@@ -50,15 +52,16 @@ public class Decompression {
             throw new RuntimeException(e);
         }
     }
-
     /**
+     * Lit des bits depuis {@code in} en partant de {@code root} et suit l’arbre jusqu’à atteindre une feuille.
      *
-     * Retourne le caractere présent à la feuille, suite au suivi du chemin lu à partir du fichier compressé
+     * <p>Chaque bit lu correspond à un déplacement : 0 → gauche, 1 → droite. Lorsque la feuille est atteinte,
+     * la méthode renvoie le symbole associé.</p>
      *
-     * @param in
-     * @param root racine du AHA à l'étape courante de décompression
-     * @return Retourne null si fin de fichier
-     * @throws IOException
+     * @param in flux d’entrée binaire permettant une lecture bit à bit
+     * @param root racine de l’arbre de Huffman adaptatif à l’instant courant du décodage
+     * @return le symbole décodé (contenu dans la feuille), ou {@code null} si fin de fichier
+     * @throws IOException si une erreur d’entrée/sortie survient pendant la lecture
      */
     private static String readFromRoot(BitBufferedInput in, HuffmanTree.Node root) throws IOException {
         HuffmanTree.Node n = root;
@@ -71,18 +74,5 @@ public class Decompression {
         }
         return ((HuffmanTree.Leaf) n).getCaractere();
     }
-
-
-
-	public static void main(String[] args) {
-        String input = "/home/idris-achabou/git/Huffman_dynamique/data/final_fail.huff";
-        String output = "/home/idris-achabou/git/Huffman_dynamique/data/final_fail_decompressed.txt";
-
-        long start = System.currentTimeMillis();
-        Decompression.decompresser(input, output);   // ta méthode existante
-        long end = System.currentTimeMillis();
-		System.out.println("Compression : " + (end-start) + " ms");
-	}
-
 
 }

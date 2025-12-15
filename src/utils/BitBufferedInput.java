@@ -5,32 +5,43 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Version optimisée pour lecture bit à bit et bloc de bits (1 à 32 bits)
- * depuis un flux tamponné (par blocs de 64 Ko).
+ * Classe utilitaire permettant la lecture bit par bit (ou par groupes de bits)
+ * à partir d'un flux d'entrée.
+ * <p>
+ * Cette classe utilise un tampon (buffer) interne de 8192 octets pour limiter
+ * le nombre d'appels système lors de la lecture du flux, améliorant ainsi les performances.
+ * Elle implémente {@link AutoCloseable} pour permettre une gestion automatique des ressources.
+ * </p>
  */
 public class BitBufferedInput implements AutoCloseable {
     private final InputStream in;
     private final byte[] buffer = new byte[8192];
     private int bufferPos = 0, bufferSize = 0;
-
-    // Octet courant et nombre de bits restants à lire
     private int currentByte;
+    //Le nombre de bits restants à lire dans l'octet courant (currentByte)
     private int numBitsRemaining = 0;
 
     public BitBufferedInput(FileInputStream in) {
         this.in = in;
     }
 
-    /** Recharge le tampon du flux si nécessaire. */
+    /**
+     * Recharge le tampon interne à partir du flux sous-jacent si nécessaire.
+     *
+     * @return {@code true} si des données ont été lues avec succès,
+     * {@code false} si la fin du flux est atteinte.
+     * @throws IOException En cas d'erreur de lecture depuis le flux.
+     */
     private boolean refill() throws IOException {
         bufferSize = in.read(buffer);
         bufferPos = 0;
         return bufferSize != -1;
     }
-
     /**
-     * Lit un seul bit (0 ou 1) du flux.
-     * @return le bit lu ou -1 si fin du fichier.
+     * Lit un seul bit du flux.
+     *
+     * @return Le bit lu (0 ou 1), ou -1 si la fin du flux est atteinte.
+     * @throws IOException En cas d'erreur d'entrée/sortie.
      */
     public int readBit() throws IOException {
         if (numBitsRemaining == 0) {
@@ -43,11 +54,17 @@ public class BitBufferedInput implements AutoCloseable {
     }
 
     /**
-     * Lit n bits consecutifs à partir du dernier bit sur lequel la lecture s'est arreter.
-     * permet de former des octes à partir de deux octets disjoints.
-     * @param n @pre n > 0
-     * @return Retourne -1 si fin de fichier
-     * @throws IOException
+     * Lit {@code n} bits consécutifs et les assemble pour former un entier.
+     * <p>
+     * La lecture se fait du bit de poids fort vers le bit de poids faible (Big Endian).
+     * Cette méthode permet de reconstituer des valeurs traversant les frontières des octets.
+     * </p>
+     *
+     * @param n Le nombre de bits à lire. Doit être {@code > 0}.
+     * Pour un résultat cohérent dans un int.
+     * @return La valeur entière composée des bits lus, ou -1 si la fin de fichier
+     * est rencontrée avant d'avoir pu lire tous les bits demandés.
+     * @throws IOException En cas d'erreur d'entrée/sortie.
      */
     public int readBits(int n) throws IOException {
         int res = readBit(), b;

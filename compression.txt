@@ -1,1 +1,0 @@
-src/resources/Blaise_Pascal.txt;src/resources/Blaise_Pascal.huff;118026;66246;0.56128;104

@@ -3,28 +3,21 @@ package utils;
 import java.io.IOException;
 
 /**
- * Responsable du décodage des caractères UTF8 à partir d'un binaire.
+ * Utilitaire de décodage UTF-8 à partir d’un flux binaire lu bit à bit.
  *
- * L'encodage UTF8 encode les "code points" de l'unicode slon la manière suivante:
- * - pour les points de codes entre U+0000 et U+007F (qui sont les caracteres ascii) l'encodage est
- * le même que le code point et donc il commence par "0" parceque l'ASCII c'est sur 7 bits
- * - Pour les points de codes entre U+0080 et U+007FF, le caractère est encodé par deux octets,
- * avec le premier octet qui commence avec "110" et le second qui commence avec "10"
- * - Pour les points de codes entre U+0800 et U+FFFF, le caractère est encodé par trois octets,
- *  avec le premier octet qui commence avec "1110" et le restes des octets qui commencent avec "10"
- * - Pour les points de codes entre U+10000 et U+10FFFF, le caractère est encodé par 4 octets,
- *  avec le premier octet qui commence avec "11110" et le restes des octets qui commencent avec "10"
- *
- *  En java il faut juste faire attention  a la conversion du code point (généré par le décodage) en un char.
- *  Parceque Java utilise de l'UTF-16 qui est fixe donc sur deux octets
+ * <p>Cette classe lit un premier octet pour déterminer la longueur de la séquence UTF-8 (1 à 4 octets),
+ * lit ensuite les octets de continuation, reconstruit le code point Unicode, puis retourne le caractère
+ * correspondant sous forme de {@link String} (en tenant compte du fait que Java utilise l’UTF-16).</p>
  */
 public class UTF8Decoder {
 
     /**
-     * Décode et retourne le prochain caractere encodé en UTF8 dans le flux.
+     * Décode et retourne le prochain caractère encodé en UTF-8 depuis le flux binaire.
      *
-     * @param in
-     * @return retourne null quand c'est une fin de fichier
+     * @param in flux binaire permettant la lecture (par blocs de 8 bits)
+     * @return le caractère décodé sous forme de {@link String}, ou {@code null} si fin de fichier
+     * @throws IOException si une erreur d'entrée/sortie survient pendant la lecture
+     * @throws UTF8DecodeException si la séquence UTF-8 lue est invalide (octet de continuation incorrect, préfixe invalide, etc.)
      */
     public static String decode(BitBufferedInput in) throws IOException, UTF8DecodeException {
         // determine la longueur de l'encodage
@@ -64,7 +57,6 @@ public class UTF8Decoder {
 
     }
 
-
     private static String firstBit(int byte_) throws UTF8DecodeException{
         // Quand on dit premier bit c'est à partir du poids fort
         if (getIemeBit(7, byte_) == 0) return "ASCII";
@@ -95,10 +87,11 @@ public class UTF8Decoder {
     }
 
     /**
-     * retourne les k premier bits de l'octes (premiers en partant du poids faible)
-     * @param k k premiers bits, k > 0
-     * @param b un octet
-     * @return
+     * Extrait les {@code k} bits de poids faible de {@code b}.
+     *
+     * @param k nombre de bits à extraire (k &gt; 0)
+     * @param b octet source
+     * @return valeur entière correspondant aux {@code k} bits de poids faible
      */
     private static int getKiemesBits(int k, int b){
         int mask = 1;
@@ -108,21 +101,24 @@ public class UTF8Decoder {
     }
 
     /**
+     * Retourne le i-ème bit de {@code b}.
      *
-     * @param i entre 0 et 7, 0 poids faible
-     * @param b byte
-     * @return
+     * @param i index du bit (0 = bit de poids faible, 7 = bit de poids fort)
+     * @param b octet source
+     * @return 0 ou 1
      */
     private static int getIemeBit(int i, int b){
         return b >>> i & 1;
     }
 
     /**
-     * Cette méthode est spécifique pour la concaténation de bits significatifs dans l'encodage utf8,
-     * donc on sait que pour n2 on a toujours exactement 6 bits (après avoir retiré le "10")
-     * @param n1 sera dans les poids fort dans le resultat.
-     * @param n2 sera dans les poids faibles dans le resultat. @pre: nombre de bits = 6.
-     * @return
+     * Concatène deux segments de bits dans le cas du décodage UTF-8.
+     *
+     * <p>Dans ce projet, les octets de continuation apportent toujours 6 bits utiles (après avoir retiré le préfixe {@code 10}).</p>
+     *
+     * @param n1 bits déjà construits (placés dans les poids forts)
+     * @param n2 bits suivants (placés dans les poids faibles), supposés sur 6 bits
+     * @return résultat de la concaténation
      */
     private static int concatBits(int n1, int n2){
         return (n1 << 6) + n2;
@@ -130,7 +126,7 @@ public class UTF8Decoder {
 
     /**
      * test si l'octet est bien un octet de continuation (qui commence donc avec 10xxxxxx)
-     * @param b
+     * @param b octet à tester
      * @return
      */
     private static boolean isValidContinuation(int b){
