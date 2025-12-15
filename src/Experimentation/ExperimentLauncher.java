@@ -35,7 +35,7 @@ public class ExperimentLauncher {
 
     /** Tailles des fichiers à générer et tester */
     private static final int[] SIZES = new int[]{
-            1000, 10_000, 100_000, 500_000, 1_000_000, 5_000_000//, 10_000_000, 25_000_000, 50_000_000, 75_000_000, 100_000_000
+            10_000_000, 20_000_000, 30_000_000, 40_000_000, 50_000_000,60_000_000, 70_000_000 , 80_000_000, 90_000_000, 100_000_000
             // 1k, 10k , 100k, 500K, 1M, 5M, 10M, 25M, 50M, 75M, 100M 
     };
 
@@ -214,12 +214,20 @@ public class ExperimentLauncher {
                     String input = Paths.get(DATA_DIR, name).toString();
                     System.out.println("Processing Current File : " + name);
 
-                    // Distribution alternée : Zipf / Uniforme
-                    if(j % 2 == 0)
-                        RandomFileGenerator.generateZipfToFile(size, 1.1, input);
-                    else
-                        RandomFileGenerator.generateUniformToFile(size, input);
-
+                    // Distribution alternée : Zipf / Uniforme / Ordonnée
+                    switch (j % 3) {
+                        case 0:
+                                RandomFileGenerator.generateZipfToFile(size, 1.1, input);
+                                break;
+                            case 1:
+                                RandomFileGenerator.generateUniformToFile(size, input);
+                                break;
+                            case 2:
+                                RandomFileGenerator.generateSortedToFile(size, input);
+                                break;
+                        default:
+                            break;
+                    }
 
                     // Fichiers de sortie
                     String compressed = Paths.get(DATA_DIR, name.replace(".txt", ".huff")).toString();

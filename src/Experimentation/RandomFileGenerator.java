@@ -199,4 +199,35 @@ public class RandomFileGenerator {
         // Réutilisation de la méthode précédente (distribution personnalisée)
         generateFromDistributionToFile(size, probs, path);
     }
+
+
+
+
+    // -------------------------------------------------------------
+    // 3) Distribution Croissante pour voir le pire cas théorique
+    // -------------------------------------------------------------
+
+    /**
+     * Génère un fichier dont la distribution Croissante.
+     *
+     *
+     * @param size taille du fichier
+     * @param path fichier de sortie
+     */
+    public static void generateSortedToFile(int size, String path) throws IOException {
+
+        int n = ALPHABET.length();
+        double[] probs = new double[n];
+
+        // Somme des poids croissants : 1 + 2 + ... + n
+        double sumWeights = n * (n + 1) / 2.0;
+
+        // Probabilités croissantes normalisées
+        for (int i = 0; i < n; i++) {
+            probs[i] = (i + 1) / sumWeights;
+        }
+
+        // Réutilisation de la méthode précédente (distribution personnalisée)
+        generateFromDistributionToFile(size, probs, path);
+    }
 }
