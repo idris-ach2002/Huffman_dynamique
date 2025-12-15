@@ -2,6 +2,9 @@ package compression;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import structure.HuffmanTree;
 import utils.DotGenerator;
 import utils.UTF8Reader;
@@ -65,7 +68,8 @@ public class Compression {
 				writer.write(bitBuffer & 0xFF);
 			}
 			writer.flush();
-			DotGenerator.gen(AHA.getRoot(), "src/resources/aha.dot");
+			Path p = Paths.get(src).getFileName();
+			DotGenerator.gen(AHA.getRoot(), "src/resources/" + p.toString().replace("txt", "dot"));
 
 		} catch(IOException ie) {
 			ie.printStackTrace();
