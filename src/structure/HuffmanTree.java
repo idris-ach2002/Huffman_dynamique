@@ -26,26 +26,27 @@ public class HuffmanTree {
             n.rang = i.getAndIncrement();
             gdbh.add(n);
         } else {
-            parcoursNiveauGDDBH(n.getLeft(), niveau - 1, i);
-            parcoursNiveauGDDBH(n.getRight(), niveau - 1, i);
+            parcoursNiveauGDDBH(n.left, niveau - 1, i);
+            parcoursNiveauGDDBH(n.right, niveau - 1, i);
         }
     }
 
     public HuffmanTree() {
         this.root = this.carSpecial;
-        this.root.setRang(0);
+        this.root.rang = 0;
         this.gdbh.add(this.root);
 
     }
 
     public void modification(String c) {
+        //assert (this.gdbh.get(0) == carSpecial && this.gdbh.getLast() == root);
         // 1 er Cas si l'arbre est vide
         if (root == carSpecial) {
             root = new Node(); //nombreNodes++;
             Leaf newCar = new Leaf(c); //nombreNodes++;
             root.setLeft(carSpecial);
             root.setRight(newCar);
-            root.setOccurence(1);
+            root.occurence = 1;
 
             // gdbh à jour et Aha aussi
             this.numAHAsetGDBH(root);
@@ -57,13 +58,13 @@ public class HuffmanTree {
 
             //(Caractère n'est pas présent dans l'arbre)
             if (feuille_c == null) {
-                Q = carSpecial.getParent();
+                Q = carSpecial.parent;
                 Node interne = new Node();
                 Leaf newCar = new Leaf(c);
 
                 interne.setLeft(carSpecial);
                 interne.setRight(newCar);
-                interne.setOccurence(1);
+                interne.occurence = 1;
 
                 Q.setLeft(interne);
 
@@ -75,9 +76,9 @@ public class HuffmanTree {
             } else {
                 Q = feuille_c;
 
-                if (ABR_NYT_CHAR(Q) && Q.getParent() == finBloc(Q)) {
-                    Q.setOccurence(Q.getOccurence() + 1);
-                    Q = Q.getParent();
+                if (ABR_NYT_CHAR(Q) && Q.parent == finBloc(Q)) {
+                    Q.occurence = Q.occurence + 1;
+                    Q = Q.parent;
                 }
             }
             traitement(Q);
@@ -85,10 +86,10 @@ public class HuffmanTree {
     }
 
     public boolean ABR_NYT_CHAR(Node Q) {
-        Node p = Q.getParent();
+        Node p = Q.parent;
         if (p == null)
             return false;
-        return p.getLeft() == carSpecial && p.getRight() == Q;
+        return p.left == carSpecial && p.right == Q;
     }
 
     /**
@@ -108,9 +109,9 @@ public class HuffmanTree {
             }
             Node b = finBloc(m);
             // important: incrémenter après finbloc pour pas fausser le calcul
-            m.setOccurence(m.getOccurence() + 1);
+            m.occurence = m.occurence + 1;
             permute(m, b);
-            Q = m.getParent();
+            Q = m.parent;
         }
     }
 
@@ -125,12 +126,12 @@ public class HuffmanTree {
         while (cur != null) {
             if (cur != root) {
                 Node succ = this.gdbh.get(cur.rang + 1);
-                if (cur.getOccurence() >= succ.getOccurence()) {
+                if (cur.occurence >= succ.occurence) {
                     return cur;
                 }
             }
-            cur.setOccurence(cur.getOccurence() + 1);
-            cur = cur.getParent();
+            cur.occurence = cur.occurence + 1;
+            cur = cur.parent;
         }
         return null;
     }
@@ -145,12 +146,12 @@ public class HuffmanTree {
      * @return
      */
     public Node finBloc(Node Q) {
-        int w = Q.getOccurence();
-        for (int i = Q.getRang(); i < gdbh.size() - 1; i++) {
+        int w = Q.occurence;
+        for (int i = Q.rang; i < gdbh.size() - 1; i++) {
             Node curr = gdbh.get(i);
             Node succ = gdbh.get(i + 1);
             // on reste dans le bloc tant que le poids == w
-            if (curr.getOccurence() == w && succ.getOccurence() != w) {
+            if (curr.occurence == w && succ.occurence != w) {
                 return curr; // fin du bloc de poids w
             }
         }
@@ -164,32 +165,30 @@ public class HuffmanTree {
      * @param m
      * @param b
      */
-
-
     public void permute(Node m, Node b) {
         if (b == null || m == null || m == root || b == root) {
             return;
         }
 
-        Node parentB = b.getParent();
-        Node parentM = m.getParent();
+        Node parentB = b.parent;
+        Node parentM = m.parent;
 
         if (parentB == parentM) {
-            if (parentB.getLeft() == m && parentB.getRight() == b) {
+            if (parentB.left == m && parentB.right == b) {
                 parentB.setLeft(b);
                 parentB.setRight(m);
-            } else if (parentB.getLeft() == b && parentB.getRight() == m) {
+            } else if (parentB.left == b && parentB.right == m) {
                 parentB.setLeft(m);
                 parentB.setRight(b);
             }
         } else {
-            if (parentB.getRight() == b) {
+            if (parentB.right == b) {
                 parentB.setRight(m);
             } else {
                 parentB.setLeft(m);
             }
 
-            if (parentM.getRight() == m) {
+            if (parentM.right == m) {
                 parentM.setRight(b);
             } else {
                 parentM.setLeft(b);
@@ -275,38 +274,22 @@ public class HuffmanTree {
             return "Node : " + this.toStr();
         }
 
-        public Node getLeft() {
-            return left;
+        public int getOccurence() {
+            return occurence;
         }
 
         public Node getRight() {
             return right;
         }
 
-        public Node getParent() {
-            return parent;
-        }
-
-        public int getOccurence() {
-            return occurence;
-        }
-
-        public void setOccurence(int occurence) {
-            this.occurence = occurence;
-        }
-
-        public void setRang(int rang) {
-            this.rang = rang;
-        }
-
-        public int getRang() {
-            return rang;
+        public Node getLeft() {
+            return left;
         }
     }
 
     public class Leaf extends Node {
 
-        private String caractere;
+        private final String caractere;
 
         public Leaf(String c) {
             this.caractere = c;

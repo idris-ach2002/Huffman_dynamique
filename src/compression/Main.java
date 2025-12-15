@@ -12,8 +12,8 @@ public class Main {
 //        String input = args[0];
 //        String output = args[1];
 
-        String input = "./src/resources/Blaise_Pascal.txt";
-        String output= "./src/resources/Blaise_Pascal.huff";
+        String input = "data/data_code/structured_1000000_5.py";
+        String output= "data/data_code/structured_1000000_5.huff";
 
         long start = System.currentTimeMillis();
         Compression.compresser(input, output);
