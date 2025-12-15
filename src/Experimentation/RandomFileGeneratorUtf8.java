@@ -50,7 +50,18 @@ public class RandomFileGeneratorUtf8 {
     // Configuration générale
     // -------------------------------------------------------------
 
-    private static final int MAX_ALPHABET_SIZE = 38_000;
+    private static final int MAX_ALPHABET_SIZE = 512; //38_000 
+    /*
+    Huffman adaptatif casse ici (fondamental)
+
+    Huffman adaptatif fait :
+
+    1 symbole distinct → 2 nœuds
+
+    38 000 symboles → ≈ 76 000 nœuds
+
+    128 000 symboles → ≈ 256 000 nœuds
+    */
     private static final int LINE_LENGTH = 80;
     private static final int BUFFER_SIZE = 65_536;
 
@@ -67,12 +78,23 @@ public class RandomFileGeneratorUtf8 {
         int count = 0;
 
         for (int cp = 0x20; cp <= 0x10FFFF && count < MAX_ALPHABET_SIZE; cp++) {
-            if (Character.isDefined(cp) && !Character.isSurrogate((char) cp)) {
-                alphabet[count++] = cp;
-            }
+
+            // 1) code point valide Unicode
+            if (!Character.isValidCodePoint(cp)) continue;
+
+            // 2) exclusion stricte des surrogates UTF-16
+            if (cp >= 0xD800 && cp <= 0xDFFF) continue;
+
+            // 3) optionnel : exclure contrôles (sauf \n si voulu)
+            if (Character.getType(cp) == Character.CONTROL) continue;
+
+            alphabet[count++] = cp;
         }
+
         return alphabet;
     }
+
+
 
     // -------------------------------------------------------------
     // Outils UTF-8

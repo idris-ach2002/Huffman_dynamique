@@ -35,7 +35,7 @@ public class ExperimentLauncher {
 
     /** Tailles des fichiers à générer et tester */
     private static final int[] SIZES = new int[]{
-            100000};//10_000_000};//, 20_000_000, 30_000_000, 40_000_000, 50_000_000,60_000_000, 70_000_000 , 80_000_000, 90_000_000, 100_000_000};
+            10_000_000, 20_000_000, 30_000_000, 40_000_000, 50_000_000,60_000_000, 70_000_000 , 80_000_000, 90_000_000, 100_000_000};
             //10M, 20M, 30M, 40M --> 100M 
 
     /** Nombre de fichiers générés par taille */
@@ -218,7 +218,7 @@ public class ExperimentLauncher {
                    // switch (j % 3) {
                         //case 0:
                                 //System.out.println("Processing Current File : " + name + " Distribution Zipf");
-                                //RandomFileGeneratorUtf8.generateZipfToFile(size, 1.1, input);
+                               // RandomFileGeneratorUtf8.generateZipfToFile(size, 1.5, input);
                                 //break;
                             //case 1:
                                 System.out.println("Processing Current File : " + name + " Distribution Uniforme");
