@@ -50,7 +50,7 @@ public class RandomFileGeneratorUtf8 {
     // Configuration générale
     // -------------------------------------------------------------
 
-    private static final int MAX_ALPHABET_SIZE = 1_000; //38_000 
+    private static final int MAX_ALPHABET_SIZE = 128_000; //38_000 
     /*
     Huffman adaptatif casse ici (fondamental)
 
@@ -252,84 +252,6 @@ public class RandomFileGeneratorUtf8 {
         }
 
         generateFromDistributionToFile(size, probs, path);
-    }
-
-    // -------------------------------------------------------------
-    // 4) Distribution croissante UTF-8
-    // -------------------------------------------------------------
-
-    public static void generateSortedToFile(long size, String path)
-            throws IOException {
-
-        int n = ALPHABET.length;
-        double[] probs = new double[n];
-
-        double sumWeights = n * (n + 1) / 2.0;
-        for (int i = 0; i < n; i++) {
-            probs[i] = (i + 1) / sumWeights;
-        }
-
-        generateFromDistributionToFile(size, probs, path);
-    }
-
-
-/**
- * Génère un fichier correspondant au pire cas théorique (Suite Fibonacci)
- * du Huffman dynamique 
- *
- * Séquence générée :
-a
-b
-cc
-ddd
-eeeee
-hhhhhhhhh
- *   ...
- *
- * Cette construction force un arbre extrêmement déséquilibré
- * (forme de peigne).
- *
- * @param size taille du fichier (en caractères)
- * @param path fichier de sortie
- */
-
-    public static void generateWorstCaseHuffmanDynamicToFile(
-            long size,
-            String path
-    ) throws IOException {
-
-        try (BufferedWriter bw = utf8Writer(path)) {
-
-            long[] bytesWritten = {0};
-            int[] col = {0};
-
-            long fPrev = 1;
-            long fCurr = 1;
-
-            for (int i = 0; i < ALPHABET.length && bytesWritten[0] < size; i++) {
-
-                long repeat;
-                if (i <= 1) {
-                    repeat = 1;
-                } else {
-                    repeat = fPrev + fCurr;
-                    fPrev = fCurr;
-                    fCurr = repeat;
-                }
-
-                for (long r = 0; r < repeat; r++) {
-                    if (!writeCodePoint(
-                            bw,
-                            ALPHABET[i],
-                            size,
-                            bytesWritten,
-                            col
-                    )) {
-                        return;
-                    }
-                }
-            }
-        }
     }
 }
 

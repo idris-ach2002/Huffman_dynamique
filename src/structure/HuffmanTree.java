@@ -60,6 +60,8 @@ public class HuffmanTree {
             root.occurence = 1;
 
             this.numAHAsetGDBH(root);
+            //carSpecial.rang = 0; newCar.rang = 1; root.rang = 2;
+
 
             cars.put(c, newCar);
         } else {

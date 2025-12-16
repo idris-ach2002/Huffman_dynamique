@@ -67,8 +67,8 @@ public class Compression {
 			}
 			writer.flush();
 
-			Path p = Paths.get(src).getFileName();
-			DotGenerator.gen(AHA.getRoot(), "src/resources/" + p.toString().replace("txt", "dot"));
+			//Path p = Paths.get(src).getFileName();
+			//DotGenerator.gen(AHA.getRoot(), "src/resources/" + p.toString().replace("txt", "dot"));
 
 		} catch(IOException ie) {
 			ie.printStackTrace();
