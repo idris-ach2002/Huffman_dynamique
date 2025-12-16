@@ -343,6 +343,6 @@ public class ExperimentLauncher {
     public static void main(String[] args) throws Exception {
         Files.createDirectories(Paths.get(DATA_DIR));
         experimentTextFiles();
-        //experimentCodeFiles();
+        experimentCodeFiles();
     }
 }
