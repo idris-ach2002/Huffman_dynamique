@@ -9,27 +9,39 @@ public class HuffmanTree {
     private HashMap<String, Leaf> cars = new HashMap<>();
     private ArrayList<Node> gdbh = new ArrayList<>();
 
-    public void numAHAsetGDBH(Node root){
-        // pour faire de l'effet de bord dans parcoursGDBH de la maniere la plus simple
-        AtomicInteger rang  = new AtomicInteger(0);
-        int h = hauteur(); // profondeur max de l’arbre
+    /**
+     * Numérote l'arbre enraciné en {@code root} selon le parcours GDBH et initialise la qui stock
+     * le parcours.
+     * @param root racine de l'arbre à numéroté
+     */
+    public void numAHAsetGDBH(Node root) {
         gdbh.clear();
-        for (int niveau = h; niveau >= 0; niveau--) {
-            parcoursNiveauGDDBH(root, niveau, rang);
+        int nbNodes = 0;
+        LinkedList<Node> queue = new LinkedList<>();
+        Stack<Node> stack = new Stack<>();
+        queue.add(root);
+
+        while (!queue.isEmpty()) {
+            Node n = queue.removeFirst();
+            nbNodes ++;
+
+            stack.push(n);
+            //Invariant P0, si on aumoins un fils on en a forcément 2
+            if (n.right != null) {
+                queue.add(n.right);
+                queue.add(n.left);
+            }
+        }
+        // pour éviter les redimensionement en cours de construction
+        gdbh.ensureCapacity(nbNodes);
+        int rang = 0;
+        while (!stack.isEmpty()) {
+            Node n = stack.pop();
+            n.rang = rang++;
+            gdbh.add(n);
         }
     }
 
-    private void parcoursNiveauGDDBH(Node n, int niveau, AtomicInteger i) {
-        if (n == null) return;
-        if (niveau == 0) {
-            // invariant: là ou est inséré n c'est l'indice i passé en param
-            n.rang = i.getAndIncrement();
-            gdbh.add(n);
-        } else {
-            parcoursNiveauGDDBH(n.left, niveau - 1, i);
-            parcoursNiveauGDDBH(n.right, niveau - 1, i);
-        }
-    }
 
     public HuffmanTree() {
         this.root = this.carSpecial;

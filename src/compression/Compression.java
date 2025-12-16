@@ -65,8 +65,6 @@ public class Compression {
 				writer.write(bitBuffer & 0xFF);
 			}
 			writer.flush();
-			DotGenerator.gen(AHA.getRoot(), "src/resources/aha.dot");
-
 		} catch(IOException ie) {
 			ie.printStackTrace();
 		}		
