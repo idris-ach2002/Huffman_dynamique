@@ -129,7 +129,8 @@ public class HuffmanTree {
 
     /**
      * Rend le premier noeud qui ne verifie pas l'incrementabilité (m)
-     * et incremente sur son chemin tout les descendants strict de m
+     * et incremente sur son chemin tout les descendants strict de m <\br>
+     * Complexité: O(n) (peigne)
      * @param Q
      * @return le premier noeud qui ne vérifie pas la condition d'incrémentabilité
      */
@@ -150,8 +151,9 @@ public class HuffmanTree {
 
 
     /**
-     * Retourne la fin du bloc de poids du nœud {@code Q} dans l’ordre {@link #gdbh}.
+     * Retourne la fin du bloc de poids du nœud {@code Q} dans l’ordre {@link #gdbh}.</\br>
      *
+     * Complexité: O(n)
      * @param Q nœud dont on veut déterminer la fin de bloc
      * @return le dernier nœud du bloc de poids {@code Q.occurence}, ou {@code null} si non trouvé
      */
@@ -208,6 +210,8 @@ public class HuffmanTree {
      *
      * <p> gauche = {@code 0}, droite = {@code 1}.</p>
      *
+     * Complexité: O(n)
+     *
      * @param n nœud dont on veut le code
      * @return chaîne de bits représentant le chemin racine → nœud
      */
@@ -223,16 +227,6 @@ public class HuffmanTree {
             curr = curr.parent;
         }
         return sb.reverse().toString();
-    }
-
-    public int hauteur(){
-        int h = 0;
-        Node curr = carSpecial;
-        while(curr != null && curr != root){
-            curr = curr.parent;
-            h++;
-        }
-        return h;
     }
 
     public HashMap<String, Leaf> getCars() {
