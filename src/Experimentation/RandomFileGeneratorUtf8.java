@@ -50,7 +50,7 @@ public class RandomFileGeneratorUtf8 {
     // Configuration générale
     // -------------------------------------------------------------
 
-    private static final int MAX_ALPHABET_SIZE = 512; //38_000 
+    private static final int MAX_ALPHABET_SIZE = 1_000; //38_000 
     /*
     Huffman adaptatif casse ici (fondamental)
 
