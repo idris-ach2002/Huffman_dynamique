@@ -148,6 +148,7 @@ public class HuffmanTree {
         return null;
     }
 
+
     /**
      * Retourne la fin du bloc de poids du nœud {@code Q} dans l’ordre {@link #gdbh}.
      *

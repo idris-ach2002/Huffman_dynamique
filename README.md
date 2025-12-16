@@ -94,4 +94,18 @@ Qui écrit les ajoute pour chaque décompression, dans le fichier ./decompressio
 - `DotGenerator` : génération de `.dot` (Graphviz) pour visualiser l’arbre
 - `Fichier` : utilitaires de fichiers (lecture/écriture). Réponses
 
+## Technologies utilisées
+```bash
+Java 
+
+idris-achabou@idris-achabou-LOQ-15IAX9E:~/git/Huffman_dynamique$ java --version
+java 24.0.1 2025-04-15
+Java(TM) SE Runtime Environment (build 24.0.1+9-30)
+Java HotSpot(TM) 64-Bit Server VM (build 24.0.1+9-30, mixed mode, sharing)
+
+idris-achabou@idris-achabou-LOQ-15IAX9E:~/git/Huffman_dynamique$ javac --version
+javac 24.0.1
+
+Système d'exploitation Ubuntu 24.04.3 LTS
+```
 ---

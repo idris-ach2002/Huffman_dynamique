@@ -2,13 +2,14 @@ package compression;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import structure.HuffmanTree;
 import utils.DotGenerator;
 import utils.UTF8Reader;
-// N*nlog(n), avec N nombre de car dans fichier
+
 public class Compression {
-
-
 	/**
 	 * Compresse le fichier {@code src} et écrit le résultat binaire dans {@code dst}.
 	 *
@@ -65,6 +66,10 @@ public class Compression {
 				writer.write(bitBuffer & 0xFF);
 			}
 			writer.flush();
+
+			Path p = Paths.get(src).getFileName();
+			DotGenerator.gen(AHA.getRoot(), "src/resources/" + p.toString().replace("txt", "dot"));
+
 		} catch(IOException ie) {
 			ie.printStackTrace();
 		}		

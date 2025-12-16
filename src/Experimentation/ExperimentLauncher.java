@@ -35,17 +35,8 @@ public class ExperimentLauncher {
 
     /** Tailles des fichiers à générer et tester */
     private static final int[] SIZES = new int[]{
-            100_000,
-            200_000,
-            300_000,
-            400_000,
-            500_000,
-            600_000,
-            700_000,
-            800_000,
-            900_000,
-            1_000_000
-    };
+            1_000_000, 2_000_000, 3_000_000, 4_000_000, 5_000_000,6_000_000, 7_000_000 , 8_000_000, 9_000_000, 10_000_000};
+            //10M, 20M, 30M, 40M --> 100M 
 
     /** Nombre de fichiers générés par taille */
     private static final int FILES_PER_SIZE = 5;
@@ -200,7 +191,7 @@ public class ExperimentLauncher {
         try (BufferedWriter rawWriter = Files.newBufferedWriter(rawCsv)) {
 
             // En-tête du CSV des résultats bruts
-            rawWriter.write("input,compressed,input_bytes,compressed_bytes,compress_ms,decompress_ms,ok\n");
+            rawWriter.write("input,compressed,input_bytes,compressed_bytes,compress_ms,decompress_ms\n");
 
             // ----------------------------------------------------------
             //   BOUCLE PRINCIPALE : ON TESTE CHAQUE TAILLE DE FICHIER
@@ -220,13 +211,28 @@ public class ExperimentLauncher {
                     // Nom du fichier à générer
                     String name = String.format("rand_%d_%d.txt", size, j+1);
                     String input = Paths.get(DATA_DIR, name).toString();
-                    System.out.println("Processing Current File : " + name);
+                    System.out.println("Deb Génération fichier " + name);
 
-                    // Distribution alternée : Zipf / Uniforme
-                    if(j % 2 == 0)
-                        RandomFileGenerator.generateZipfToFile(size, 1.1, input);
-                    else
-                        RandomFileGenerator.generateUniformToFile(size, input);
+
+                    // Distribution alternée : Zipf / Uniforme / Ordonnée
+                   // switch (j % 3) {
+                        //case 0:
+                                //System.out.println("Processing Current File : " + name + " Distribution Zipf");
+                               // RandomFileGeneratorUtf8.generateZipfToFile(size, 1.5, input);
+                                //break;
+                            //case 1:
+                                System.out.println("Processing Current File : " + name + " Distribution Uniforme");
+                                RandomFileGeneratorUtf8.generateUniformToFile(size, input);
+                                //break;
+                           // case 2:
+                               // System.out.println("Processing Current File : " + name + " Distribution Ordonnée croissante Fibonacci");
+                               // RandomFileGeneratorUtf8.generateWorstCaseHuffmanDynamicToFile(size, input);
+                               //break;
+                       // default:
+                            //break;
+                    //}
+
+                    System.out.println("Fin Génération fichier " + name);
 
 
                     // Fichiers de sortie
@@ -235,22 +241,25 @@ public class ExperimentLauncher {
                     // --------------------------------------------------
                     //   MESURE TEMPS COMPRESSION
                     // --------------------------------------------------
-
+                    System.out.println("Deb Compression");
                     long t0 = System.nanoTime();
                     Compression.compresser(input, compressed);
                     long t1 = System.nanoTime();
+                    System.out.println("Fin Compression");
+
 
                     long compressMs = (t1 - t0) / 1_000_000L;
 
                     // --------------------------------------------------
                     //   MESURE TEMPS DÉCOMPRESSION
                     // --------------------------------------------------
-                    
+                    System.out.println("Deb Decompression");
+
                     String file_decomp = Paths.get(DATA_DIR, name.replace(".txt", "_decompressed.txt")).toString();
                     long t2 = System.nanoTime();
                     Decompression.decompresser(compressed, file_decomp);
                     long t3 = System.nanoTime();
-
+                    System.out.println("Fin Decompression");
                     long decompressMs = (t3 - t2) / 1_000_000L;
 
                     try {
@@ -344,6 +353,6 @@ public class ExperimentLauncher {
     public static void main(String[] args) throws Exception {
         Files.createDirectories(Paths.get(DATA_DIR));
         experimentTextFiles();
-        experimentCodeFiles();
+        //experimentCodeFiles();
     }
 }
